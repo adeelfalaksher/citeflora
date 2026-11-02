@@ -1,0 +1,13 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {validateSource,validateReview,normalizeDOI,safeURL} from '../lib/validation.mjs';
+const source={title:'Example source',text:'Mentha spicata leaves were used for cough.',rightsConfirmed:true,evidenceType:'traditional-report',licence:'Original content'};
+test('Validate a source and canonicalize its DOI',()=>{assert.equal(validateSource({...source,doi:'https://doi.org/10.1234/ABC'}).doi,'10.1234/abc');});
+test('Import requires an explicit rights confirmation',()=>assert.throws(()=>validateSource({...source,rightsConfirmed:false})));
+test('Disallow executable links and embedded credentials',()=>{for(const u of ['javascript:alert(1)','data:text/html,x','https://secret:password@example.org/'])assert.throws(()=>safeURL(u));});
+test('Bound title and source length before database insertion',()=>{assert.throws(()=>validateSource({...source,title:'x'.repeat(301)}));assert.throws(()=>validateSource({...source,text:'x'.repeat(80001)}));});
+test('Require valid DOI syntax without treating an arbitrary URL as a DOI',()=>{assert.throws(()=>normalizeDOI('https://example.org/'));assert.throws(()=>normalizeDOI('10.1234/abc def'));});
+test('Flagged acceptance requires a meaningful uncertainty note',()=>{assert.throws(()=>validateReview({status:'accepted',revision:0,reviewerNote:''},{flags:['ambiguous-name']}));});
+test('Identity decisions require a recorded basis',()=>{assert.throws(()=>validateReview({status:'accepted',revision:0,resolvedName:'Mentha spicata'},{flags:[]}));});
+test('Validate optimistic review revisions and status values',()=>{assert.throws(()=>validateReview({status:'approved',revision:0},{flags:[]}));assert.throws(()=>validateReview({status:'accepted',revision:-1},{flags:[]}));});
+test('Reject malformed table rows rather than guessing field alignment',()=>{assert.throws(()=>validateSource({...source,format:'table'}));});

@@ -1,0 +1,25 @@
+name: Citeflora checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Enable the declared package manager
+        run: corepack enable
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Regression and API tests
+        run: pnpm test
+      - name: Type checking
+        run: pnpm typecheck
+      - name: Production build
+        run: pnpm build

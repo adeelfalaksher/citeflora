@@ -1,0 +1,10 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {extractClaims,ENGINE_VERSION,lexiconSize,evidenceGroups} from '../lib/engine.mjs';
+const sources=JSON.parse(readFileSync(new URL('../data/corpus.json',import.meta.url),'utf8')).map(s=>({...s,id:s.key}));
+const claims=sources.flatMap(s=>extractClaims(s.text,s).claims.map((c,i)=>({...c,id:s.id+'-'+i,sourceId:s.id,status:'pending'})));
+const valid=claims.filter(c=>{const s=sources.find(s=>s.id===c.sourceId);return s.text.slice(c.start,c.end)===c.quote&&s.text.slice(c.plantStart,c.plantEnd)===c.plantName&&s.text.slice(c.useStart,c.useEnd)===c.reportedUse;});
+const hashes=sources.every(s=>createHash('sha256').update(s.text).digest('hex')===s.contentHash);
+const result={engineVersion:ENGINE_VERSION,sources:sources.length,selectedRows:sources.reduce((n,s)=>n+s.rowCount,0),sourceReportedTaxa:new Set(claims.map(c=>c.candidates.length===1?c.candidates[0]:c.plantName)).size,lexiconEntries:lexiconSize,candidateExtractions:claims.length,validSourceSpans:valid.length,sourceDigestsMatch:hashes,associationGroups:evidenceGroups(sources,claims).length,interpretation:'Integrity and reproducibility checks on a small attributed corpus. These results are not extraction accuracy or clinical validation.'};
+if(valid.length!==claims.length||!hashes)throw new Error('Source integrity check failed.');
+writeFileSync(new URL('../data/evaluation.json',import.meta.url),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result,null,2));

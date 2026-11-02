@@ -1,0 +1,12 @@
+{
+  "engineVersion": "citeflora-rules-1.0.0",
+  "sources": 2,
+  "selectedRows": 43,
+  "sourceReportedTaxa": 18,
+  "lexiconEntries": 62,
+  "candidateExtractions": 75,
+  "validSourceSpans": 75,
+  "sourceDigestsMatch": true,
+  "associationGroups": 60,
+  "interpretation": "Integrity and reproducibility checks on a small attributed corpus. These results are not extraction accuracy or clinical validation."
+}
