@@ -88,3 +88,36 @@ test('Plural headaches retain the ambiguous mint identity in an imported narrati
   const result=extractClaims('Mentha spicata leaves were used for cough. Mint was used for headaches. Aloe vera was not used for burns.');
   assert.equal(result.claims.length,3);const mint=result.claims.find(c=>c.plantName==='Mint');assert.equal(mint.category,'Pain');assert.ok(mint.flags.includes('ambiguous-name'));assert.equal(mint.candidates.length,3);assert.equal(result.claims.find(c=>c.plantName==='Aloe vera').polarity,'negative');
 });
+
+test('Ordinary mentions and adverse effects cannot enter the positive association map',()=>{
+  for(const text of ['Mentha spicata grows in cold regions.','Mentha spicata was used in cold storage.','Aloe vera causes skin irritation and burns.','Garlic allergy caused swelling in the patient.']){
+    const claims=extractClaims(text).claims.map(c=>({...c,sourceId:'a',status:'pending'}));
+    assert.ok(claims.length>0);assert.ok(claims.every(c=>c.polarity!=='reported'),text);
+    assert.deepEqual(evidenceGroups([{id:'a',format:'text'}],claims),[],text);
+  }
+});
+test('A reported-use table cell can describe an ailment caused by another plant',()=>{
+  const cs=extractClaims('Malva sylvestris | Mallow | Leaves | Paste | Topical | Irritations (caused by Urtica dioica)',{format:'table'}).claims;
+  assert.equal(cs.length,1);assert.equal(cs[0].plantName,'Malva sylvestris');assert.equal(cs[0].polarity,'reported');
+});
+test('Straightforward negation and mixed positive-negative sentences remain out of the positive map',()=>{
+  for(const text of ['Aloe vera is not recommended for burns.','Aloe vera was not traditionally used for burns.','No participants used Aloe vera for burns.','Mentha spicata is used for cough, not fever.']){
+    const claims=extractClaims(text).claims.map(c=>({...c,sourceId:'a',status:'accepted'}));
+    assert.ok(claims.length>0);assert.ok(claims.every(c=>c.polarity!=='reported'),text);
+    assert.deepEqual(evidenceGroups([{id:'a',format:'text'}],claims),[],text);
+  }
+  const mixed=extractClaims('Mentha spicata is used for cough, not fever.').claims;
+  assert.ok(mixed.every(c=>c.polarity==='uncertain'&&c.flags.includes('mixed-polarity')));
+});
+test('A supported use relation stays reported and not-only is not a negative statement',()=>{
+  for(const text of ['Participants applied Aloe vera leaves to burns.','Mentha spicata is a traditional remedy for cough.','Aloe vera was used not only for burns but also for wounds.']){
+    const cs=extractClaims(text).claims;assert.ok(cs.length>0);assert.ok(cs.every(c=>c.polarity==='reported'),text);
+  }
+});
+test('Legacy unflagged narrative co-occurrences do not bypass current map safeguards',()=>{
+  const c={...extractClaims('Aloe vera causes burns.').claims[0],sourceId:'a',status:'accepted',polarity:'reported',flags:[],engineVersion:'citeflora-rules-1.0.1'};
+  assert.deepEqual(evidenceGroups([{id:'a',format:'text'}],[c]),[]);
+});
+test('An unpunctuated giant passage is rejected instead of amplifying into megabytes of repeated quotes',()=>{
+  assert.throws(()=>extractClaims('Aloe vera was used for burns '+ 'and wounds '.repeat(650)),/passage.*6,000|6,000.*passage/i);
+});

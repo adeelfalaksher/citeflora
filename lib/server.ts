@@ -1,6 +1,6 @@
 import {env} from 'cloudflare:workers';
 import corpus from '../data/corpus.json';
-import {extractClaims,ENGINE_VERSION,evidenceCSV} from './engine.mjs';
+import {extractClaims,ENGINE_VERSION,evidenceCSV,ExtractionInputError} from './engine.mjs';
 import {InputError,field,validateSource,validateReview} from './validation.mjs';
 import {taxonomyLookup,literatureSearch,openArticle} from './external';
 import type {Source,Claim,Workspace} from './types';
@@ -89,7 +89,7 @@ async function reviewClaim(request:Request,claimId:string){
   const original=JSON.parse(row.payload) as Claim;
   const input=validateReview(await body(request),original);
   if(row.revision!==input.revision)throw new InputError('This claim changed in another tab. Refresh the workspace before saving.',409);
-  let taxonomy;
+  let taxonomy=input.review.resolvedName===original.review?.resolvedName&&input.review.identityBasis===original.review?.identityBasis?original.review?.taxonomy:undefined;
   if(input.taxonomyQuery){
     taxonomy=await taxonomyLookup(input.taxonomyQuery);
     if(taxonomy.kingdom!=='Plantae'||!taxonomy.usageKey||taxonomy.matchType==='NONE')throw new InputError('GBIF did not return a plant identity for this query. Record the uncertainty manually.');
@@ -97,7 +97,7 @@ async function reviewClaim(request:Request,claimId:string){
     if(input.review.resolvedName&&!possible.includes(input.review.resolvedName))throw new InputError('The reviewed identity does not match the GBIF result. Refresh the suggestion or record a manual identity basis.');
   }
   const payload={...original,review:{...input.review,...(taxonomy?{taxonomy}:{})}};
-  const now=NOW();const detail=JSON.stringify({from:row.status,to:input.status,revision:input.revision+1,note:input.reviewerNote,review:input.review});
+  const now=NOW();const detail=JSON.stringify({from:row.status,to:input.status,revision:input.revision+1,note:input.reviewerNote,review:payload.review});
   // D1 executes this batch transactionally. The audit insert and update share the revision predicate.
   const result=await DB().batch([
     DB().prepare('INSERT INTO audit (id,workspace_id,claim_id,source_id,action,detail,created_at) SELECT ?,?,?,?,?,?,? FROM claims WHERE id=? AND workspace_id=? AND revision=?').bind(id(),s.workspaceId,claimId,row.source_id,'claim-reviewed',detail,now,claimId,s.workspaceId,input.revision),
@@ -140,6 +140,7 @@ export async function api(request:Request){
     return json({error:'This endpoint was not found.'},404);
   }catch(error){
     if(error instanceof InputError)return json({error:error.message},error.status);
+    if(error instanceof ExtractionInputError)return json({error:error.message},400);
     if(error instanceof Error&&['TimeoutError','AbortError'].includes(error.name))return json({error:'The external research service timed out. Please try again.'},504);
     console.error('Citeflora request failed',error instanceof Error?error.name+': '+error.message.slice(0,200):'UnknownError');
     return json({error:'The request could not be completed. Please try again.'},500);

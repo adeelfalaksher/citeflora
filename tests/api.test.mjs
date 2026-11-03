@@ -103,3 +103,21 @@ test('Session creation rate limits are enforced per client bucket',async()=>{
   for(let i=0;i<8;i++)assert.equal((await api(req('session',{method:'POST',body:{},client:'203.0.113.10'}))).status,201);
   assert.equal((await api(req('session',{method:'POST',body:{},client:'203.0.113.10'}))).status,429);
 });
+
+test('A note-only review preserves taxonomy provenance and a manual identity change clears it',async()=>{
+  const a=await start();const claim=a.data.claims.find(c=>c.plantName==='Mentha spicata')||a.data.claims[0];
+  const body={status:'accepted',revision:0,reviewerNote:'Checked the passage; this is a taxonomy suggestion only.',resolvedName:'Mentha spicata',identityBasis:'Dated GBIF name suggestion, not historical specimen identification.',taxonomyQuery:'Mentha spicata'};
+  const firstResponse=await api(req('claims/'+claim.id,{method:'PATCH',cookie:a.cookie,body}));assert.equal(firstResponse.status,200);
+  const first=(await firstResponse.json()).claims.find(c=>c.id===claim.id);assert.ok(first.review.taxonomy.usageKey);
+  const second=await (await api(req('claims/'+claim.id,{method:'PATCH',cookie:a.cookie,body:{...body,revision:1,taxonomyQuery:'',reviewerNote:'Updated only this note after comparing the unchanged passage.'}}))).json();
+  assert.deepEqual(second.claims.find(c=>c.id===claim.id).review.taxonomy,first.review.taxonomy);
+  const event=second.audit.find(e=>e.claimId===claim.id&&JSON.parse(e.detail).revision===2);
+  assert.deepEqual(JSON.parse(event.detail).review.taxonomy,first.review.taxonomy);
+  const changed=await (await api(req('claims/'+claim.id,{method:'PATCH',cookie:a.cookie,body:{...body,revision:2,taxonomyQuery:'',resolvedName:'Mentha longifolia',identityBasis:'Manual contextual identification requiring further checking.'}}))).json();
+  assert.equal(changed.claims.find(c=>c.id===claim.id).review.taxonomy,undefined);
+});
+test('Oversized passages fail with a useful input error and no source write',async()=>{
+  const a=await start();const response=await api(req('sources',{method:'POST',cookie:a.cookie,body:{title:'Unpunctuated QA source',text:'Aloe vera was used for burns '+ 'and wounds '.repeat(650),rightsConfirmed:true,evidenceType:'traditional-report',licence:'Original content'}}));
+  assert.equal(response.status,400);assert.match((await response.json()).error,/6,000/);
+  const current=await (await api(req('workspace',{cookie:a.cookie}))).json();assert.equal(current.sources.length,2);
+});

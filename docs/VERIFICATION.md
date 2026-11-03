@@ -6,7 +6,7 @@ Reviewed 3 November 2026. Results describe the checked build and deployed servic
 
 | Check | Result |
 | --- | --- |
-| `pnpm test` | 50 of 50 developer-authored regression and API checks pass |
+| `pnpm test` | 58 of 58 developer-authored regression and API checks pass |
 | `pnpm typecheck` | TypeScript no-emit check passes |
 | `pnpm lint` | Full configured ESLint check passes |
 | `pnpm build:vercel` | Standard Next.js 16 / React 19 production build passes |
@@ -59,7 +59,7 @@ A fresh production dependency audit reported 0 known advisories on 3 November 20
 
 ## Continuous integration
 
-The published final source commit `69e0c66c97af6df72dff61172b78fbb9bae0c469` passed GitHub Actions run [41596319514](https://github.com/adeelfalaksher900-creator/citeflora/actions/runs/41596319514). CI runs the 50 tests, type generation and TypeScript, ESLint, the Vercel build, standalone API bundle and legacy Sites build. Both build orders were also checked locally with canonical route generation before TypeScript.
+The published final source commit `69e0c66c97af6df72dff61172b78fbb9bae0c469` passed GitHub Actions run [41596319514](https://github.com/adeelfalaksher900-creator/citeflora/actions/runs/41596319514). CI runs the regression tests, type generation and TypeScript, ESLint, the Vercel build, standalone API bundle and legacy Sites build. Both build orders were also checked locally with canonical route generation before TypeScript.
 
 Branch-protection settings were not changed. CODEOWNERS and contribution instructions request maintainer review, but an enforced protection rule is not claimed.
 
@@ -73,4 +73,14 @@ No domain-expert validation, community endorsement, user study, independently la
 
 The Devpost title and tagline were saved. The details form was populated previously, but its required video URL prevented the normal save. The prepared story is in [DEVPOST.md](DEVPOST.md). No placeholder video URL or final submission has been provided.
 
-The 1536 × 1024 cover and eight-slide editable deck/PDF have been refreshed for the revised interface and Vercel hosting. Thumbnail upload did not complete. Team count, individual contributions and first-day Discord registration still need team verification. Full demo video and 15-image gallery production await user project approval.
+The 1536 × 1024 cover and eight-slide editable deck/PDF have been refreshed for the revised interface and Vercel hosting. Thumbnail upload did not complete. Team count, individual contributions and first-day Discord registration still need team verification. The user authorized video and gallery production after the current audit and fixes. These deliverables and the draft update are in progress.
+
+## Working-product audit, 3 November 2026
+
+A fresh baseline hosted run passed at 10:46 UTC. A focused narrative audit then found and reproduced four defects: ordinary/adverse-effect mentions defaulted to positive associations; simple negative phrases were missed; a note-only review discarded structured taxonomy provenance; and zero-result imports announced review-ready candidates. These were functional defects, not merely visual changes.
+
+Engine 1.0.2 conservatively marks unsupported relations, adverse-effect contexts and mixed clauses uncertain. Current map screening also protects older stored narratives without changing their original records. Plain negation remains negative. Source-table use cells retain their schema context. The import flow explains bounded vocabulary and gives the actual result count, including zero. Note-only reviews retain the taxonomy response when identity fields are unchanged; manual identity changes clear it, and audit events include the saved taxonomy object. A 6,000-character sentence/table-row bound prevents giant repeated candidate passages. Stable alias patterns and use-first scanning reduce unnecessary work.
+
+All eight added regression checks passed, bringing the suite from 50 to 58. TypeScript, ESLint, the Next production build and standalone API build passed locally. The starter remains 75 candidates, 60 groups and 75 valid source/entity spans across the two unchanged attributed snapshots. Updated hosted verification adds challenge contexts, zero results, passage bounds, taxonomy retention and all UTF-16 spans. Deployment and fresh browser checks are recorded below when completed.
+
+The practical function is organizing a reviewable evidence collection. There is no measured time-saving claim or demonstrated user-benefit result: no external researcher study has been performed. The tool's real persistence, imports and exports do not make its bounded rules scientifically comprehensive.

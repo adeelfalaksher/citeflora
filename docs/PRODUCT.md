@@ -80,7 +80,7 @@ Mobbin references included Mintlify onboarding and Sana's adding-source flow. Pr
 
 ## Risks and limits
 
-The deterministic English engine has bounded vocabulary and relation scope. It is not a trained AI model. Same-sentence co-occurrence is a candidate requiring review. Negation rules are incomplete, historical names do not establish specimen identity, and abbreviations may need the paper's own key. No clinical or independent expert validation is claimed.
+The deterministic English engine has bounded vocabulary and relation scope. It is not a trained AI model. Narrative co-occurrence without a supported use relation remains uncertain. Adverse-effect contexts and mixed polarity stay out of the positive map. Negation rules are conservative and incomplete, historical names do not establish specimen identity, and abbreviations may need the paper's own key. No clinical or independent expert validation is claimed.
 
 The browser session expires after 30 days. There are no accounts, recovery or cross-device synchronization. Exports are portable records. External services may fail. Publication licences do not grant rights to restricted community knowledge. Only public or explicitly permitted material belongs in this workspace.
 
@@ -94,4 +94,4 @@ The recorded deadline is 8 November 2026, 09:00 UTC, 14:00 Pakistan time. Teams 
 
 Required materials include a Devpost page, public repository, documentation/data licences, a video of at most 10 minutes and a deck of at most 10 slides. AI assistance must be disclosed accurately. The title and tagline are saved as a draft. The details form requires a video URL before saving, so the prepared story remains in [DEVPOST.md](DEVPOST.md). No video URL is invented and no final submission has been performed.
 
-The 3:2 cover and eight-slide editable deck/PDF now show the revised interface and Vercel deployment. Full video and the 15-image gallery remain deferred until user project approval.
+The 3:2 cover and eight-slide editable deck/PDF now show the revised interface and Vercel deployment. The user authorized a real product video and 15-image gallery after the live audit and fixes. Production is in progress; final submission remains with the team.
