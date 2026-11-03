@@ -8,9 +8,9 @@ Traditional knowledge research often starts with a table, a vernacular name and 
 
 ## What it does
 
-Citeflora is a research workspace for EthnoHack Track 1, Traditional Knowledge Mining. Researchers can start with two attributed open-access studies or import permitted English text and supported files. A deterministic rule engine proposes plant-use records and highlights their exact passages. Users inspect uncertainty, consult GBIF taxonomy suggestions, correct fields separately from the original extraction, and save an accepted, rejected or pending decision.
+Citeflora is a research workspace for EthnoHack Track 1, Traditional Knowledge Mining. Researchers can start with two attributed open-access studies or import permitted English text, PDF, DOC, DOCX, CSV, TXT, HTML or JSON. A deterministic rule engine proposes plant-use records and highlights their exact passages. Users inspect uncertainty, consult GBIF taxonomy suggestions, correct fields separately from the original extraction, and save an accepted, rejected or pending decision.
 
-The evidence map groups positive reported associations and counts duplicate DOIs once. Negative, speculative, adverse-effect, unresolved-relation, complex, rejected and unassigned multi-plant records stay out of that positive map. CSV, JSON and printable HTML exports preserve citations, spans, uncertainty and review status. Acceptance records an extraction review. It does not validate a treatment.
+The evidence map groups positive reported associations and counts duplicate DOIs once. Negative, speculative, adverse-effect, unresolved-relation, complex, rejected and unassigned multi-plant records stay out of that positive map. Formatted PDF, DOCX and DOC reports preserve citations, spans, uncertainty and review status in aligned fields and readable source passages. The structured archive API remains available for reproducibility. Acceptance records an extraction review. It does not validate a treatment.
 
 ## How users and judges try it
 
@@ -37,7 +37,7 @@ Common-name ambiguity, several plants in one sentence, inherited table cells and
 
 The starter contains 43 selected rows from two CC BY studies, 18 source-reported taxa and 75 candidates. All 75 passage spans match their snapshots and both digests reproduce. These are integrity results, not a scientific accuracy benchmark.
 
-The current local suite passes 59 regression and API checks, TypeScript checking, ESLint and both production builds. A real hosted check through Vercel verified a three-candidate import, ambiguity and negation flags, a saved correction, source hashing, a dated taxonomy reference, licensed narrative preparation and all three exports. It also verified workspace isolation, stale-review rejection and cross-origin write rejection. The audit also verified taxonomy provenance after a note edit, ordinary/adverse/negative context screening, honest zero counts, passage bounds and author attribution. A browser run completed a saved review and JSON export, followed by a real Europe PMC search and a 32-candidate licensed narrative import. Mobile navigation was checked at 390 CSS px. Final-release browser and scientific-validation limits are recorded in the [verification report](https://github.com/adeelfalaksher900-creator/citeflora/blob/main/docs/VERIFICATION.md).
+The current local suite passes 67 regression, document and API checks, TypeScript checking, ESLint and both production builds. A real hosted check through Vercel verified a three-candidate import, ambiguity and negation flags, a saved correction, source hashing, a dated taxonomy reference, licensed narrative preparation and all three exports. It also verified workspace isolation, stale-review rejection and cross-origin write rejection. The audit also verified taxonomy provenance after a note edit, ordinary/adverse/negative context screening, honest zero counts, passage bounds and author attribution. A browser run completed a saved review and JSON export, followed by a real Europe PMC search and a 32-candidate licensed narrative import. Mobile navigation was checked at 390 CSS px. Final-release browser and scientific-validation limits are recorded in the [verification report](https://github.com/adeelfalaksher900-creator/citeflora/blob/main/docs/VERIFICATION.md).
 
 ## What we learned
 
@@ -51,7 +51,7 @@ Independent evaluation with ethnobotany and pharmacognosy researchers; broader m
 
 Starter studies: Tsioutsiou, Cheilari and Aligiannis (2023), DOI 10.3389/fphar.2023.1225580; Jabeen and colleagues (2024), DOI 10.3390/plants13101379. Each source retains author credit, licence, adaptation notes and a publication link. New code is MIT-licensed. Excerpts and third-party software retain their own terms.
 
-Research, design, development, verification and submission copy used significant ChatGPT/Codex assistance. Project artwork was generated with imagegen. Gallery screenshots show the actual application. Narration is prepared with a built-in synthetic voice. Team members are responsible for final review and submission. The maintained Sites/Vinext starter predates the hackathon. The extraction engine, corpus workflow, API, schema, proxy boundary, guided review interface, exports and checks were developed for Citeflora.
+Research, design, development, verification and submission copy used significant ChatGPT/Codex assistance. Project artwork was generated with imagegen. Gallery screenshots show the actual application. Narration uses a built-in synthetic voice. Team members are responsible for final review and submission. The maintained Sites/Vinext starter predates the hackathon. The extraction engine, corpus workflow, API, schema, proxy boundary, guided review interface, exports and checks were developed for Citeflora.
 
 Live app: [citeflora.vercel.app](https://citeflora.vercel.app)
 

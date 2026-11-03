@@ -29,7 +29,7 @@ Judges and first-time visitors use **Try the guided example** at [citeflora.verc
 | Open the study | Inspect citation, licence, regional context and selected-table scope | Source record and unchanged text snapshot |
 | Check the passage | Read the proposed *Hypericum perforatum* and wounds relationship | Highlighted plant and use words at UTF-16 span 1070–1220 |
 | Save your review | Accept, reject or keep pending; optionally add notes or corrections | New server revision and audit event; guide advances after success |
-| Export the evidence | Choose CSV, JSON or HTML | Workspace export with saved review states; completion follows a successful response |
+| Export the evidence | Choose PDF, DOCX or DOC | Workspace export with saved review states; completion follows a successful response |
 
 The target remains selected after a decision. Replaying the guide does not reset reviews. The full workbench retains source search, filters, imports, taxonomy checks, evidence mapping and exports. The guide adds a clear route through these capabilities.
 
@@ -44,7 +44,7 @@ The target remains selected after a decision. Replaying the guide does not reset
 7. Present GBIF as a taxonomy suggestion. Its score must not represent efficacy or historical identification probability.
 8. Distinguish live Europe PMC results from dated fallback material and check supported licences before narrative preparation.
 9. Deduplicate DOIs and exclude negative, speculative, rejected and unassigned records from the positive map.
-10. Export attribution, uncertainty, original/reviewed fields, spans and review state. JSON and HTML include the latest 200 audit events.
+10. Export attribution, uncertainty, original/reviewed fields, spans and review state. Formatted PDF and Word reports include an activity register for the latest 200 audit events. The compatibility API retains structured JSON, CSV and HTML.
 11. Verify isolation, the hosting trust boundary, conflicts, safe exports and public API workflows. Record browser and scientific validation separately.
 
 ## Architecture and deployment

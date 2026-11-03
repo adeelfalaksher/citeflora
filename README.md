@@ -17,7 +17,7 @@ Judges and first-time visitors can choose **Try the guided example** without cre
 1. **Open the study.** Inspect the Pelion study's citation, CC BY licence and selected-table scope.
 2. **Check the passage.** Follow the proposed *Hypericum perforatum* and wounds record to its highlighted words in the unchanged source snapshot.
 3. **Save your review.** Accept, reject or keep the extraction pending. Add notes or corrections as needed. The next step becomes available after the server saves the new revision.
-4. **Export the evidence.** Generate CSV, JSON or a printable HTML report containing the saved review and source trail. Completion follows a successful export response.
+4. **Export the evidence.** Download a formatted PDF, DOCX or DOC report containing the saved review and source trail. Completion follows a successful export response.
 
 Researchers can instead choose **Add a research source** to import permitted text, inspect its candidates, and build their own collection. The guided example uses the same real review and export features as the workbench.
 
@@ -33,12 +33,12 @@ Citeflora preserves the passage, citation, preparation, regional context and unc
 
 - Isolated research workspaces persisted in Cloudflare D1 and identified by an HttpOnly browser session cookie.
 - A starter corpus with 43 selected table rows from two attributed CC BY papers, producing 75 candidates and 18 source-reported taxa.
-- Import of English text, UTF-8 text/Markdown files, and the documented six-column CSV format.
+- Import of text-based PDF, Word DOC/DOCX, UTF-8 TXT/Markdown, HTML, a single-source JSON object, and the documented six-column CSV format. Files are converted locally before the extracted text is reviewed and saved.
 - A versioned deterministic rule engine with exact UTF-16 offsets into unchanged snapshots and SHA-256 digests.
 - A review queue with filters, uncertainty flags, notes, optional corrections and revision checks.
 - 24 dated GBIF taxonomy reference records, live lookup for other names, and Europe PMC search with licence-checked narrative imports. A clearly labelled one-paper catalogue remains available if live search fails.
 - An evidence map of positive reported associations, with duplicate DOIs counted once. Negative, speculative, rejected and unassigned associations are excluded.
-- CSV, JSON and printable HTML exports with attribution, review state, original and reviewed fields, and source spans. JSON and HTML include the latest 200 audit events.
+- Formatted PDF, DOCX and genuine legacy DOC downloads with aligned fields, source citations, original passages, uncertainty and separate review corrections. PDF embeds Unicode fonts; DOCX contains native editable tables and page fields. The compatibility API retains CSV, JSON and HTML for reproducibility.
 
 ## Architecture
 
@@ -132,7 +132,7 @@ node scripts/evaluate.mjs
 python3 scripts/verify-hosted.py --url https://citeflora.vercel.app
 ```
 
-The 59 developer-authored checks cover extraction scope, ambiguity, negation, Unicode offsets, DOI deduplication, validation, spreadsheet escaping, session isolation, revision conflicts, audit persistence, exports and the proxy/Worker trust boundary. API checks execute the real API against an in-memory SQLite adapter for D1. These do not replace browser or hosted tests and are not an independent scientific accuracy benchmark. See the dated [verification report](docs/VERIFICATION.md).
+The 67 developer-authored checks cover extraction scope, ambiguity, negation, Unicode offsets, DOI deduplication, validation, spreadsheet escaping, session isolation, revision conflicts, audit persistence, exports and the proxy/Worker trust boundary. API checks execute the real API against an in-memory SQLite adapter for D1. These do not replace browser or hosted tests and are not an independent scientific accuracy benchmark. See the dated [verification report](docs/VERIFICATION.md).
 
 To refresh the attributed material:
 
@@ -174,3 +174,11 @@ New code is MIT-licensed. Excerpts retain their papers' CC BY terms and author a
 ## Contributing
 
 Open an issue or pull request with a reproducible case. Changes require maintainer review. Keep snapshots immutable, preserve uncertainty and attribution, and add regression coverage for extraction or authorization changes. Never commit patient information, restricted community knowledge or credentials.
+
+## Document files
+
+The upload flow accepts PDF, DOC, DOCX, CSV, TXT/Markdown, HTML and JSON. PDF and Word files are limited to 5 MB. Other files are limited to 250 KB. Extracted text is capped at 80,000 characters, and PDFs at 100 pages. Scanned PDFs require OCR before import. Password-protected or damaged files fail with an explicit message. Converted text, reading order and attribution must be checked before import; the original binary file is not uploaded or retained.
+
+JSON input accepts one source object with a string `text` field and optional `title`, `authors`, `year`, `region`, `doi`, `url`, `licence` and `format` fields. Import permission must still be confirmed in the form. Multi-source archives are rejected to preserve individual citations. HTML scripts and styles are discarded without loading remote resources.
+
+Report fonts and the PDF.js worker are copied from pinned dependencies before development or production builds. Their licences are served beside those assets. The legacy DOC reader/writer is attributed in `lib/vendor/jsdoc/PROVENANCE.md`, with its 0BSD licence and local reader bounds documented. Document generation runs in the browser from a fresh, authenticated workspace export. No source material is sent to a third-party conversion service.

@@ -59,11 +59,11 @@ const questions = [
   },
   {
     title: 'Can I bring my own sources?',
-    answer: 'Yes. Paste permitted English text, upload a UTF-8 .txt or .md file, or use the six-column CSV template. You can also search Europe PMC and prepare a narrative import when its licence is supported. Add the citation and permission basis before saving.',
+    answer: 'Yes. Paste permitted English text, upload PDF, DOC, DOCX, TXT, HTML or JSON, or use the six-column CSV template. You can also search Europe PMC and prepare a narrative import when its licence is supported. Add the citation and permission basis before saving.',
   },
   {
     title: 'How are my reviews saved?',
-    answer: 'Sources and review decisions are stored in Cloudflare D1 in a workspace associated with this browser. The session cookie lasts 30 days. There are no user accounts or cross-device sync. Export CSV, JSON, or a printable HTML report to keep a portable copy.',
+    answer: 'Sources and review decisions are stored in Cloudflare D1 in a workspace associated with this browser. The session cookie lasts 30 days. There are no user accounts or cross-device sync. Download a formatted PDF, DOCX or DOC report to keep a portable copy.',
   },
 ];
 
@@ -128,7 +128,7 @@ export default function Welcome({onGuide, onWorkspace, onImport, onMethods, conn
         <ol className="welcome-steps">
           <li><div className="welcome-step-top"><span>01</span><FileText size={23}/></div><h3>Bring the source.</h3><p>Choose a starter paper or import permitted text. Citeflora saves the snapshot and citation, then proposes plant use records.</p><span className="welcome-step-detail">Text, supported files, or open literature</span></li>
           <li><div className="welcome-step-top"><span>02</span><ListChecks size={23}/></div><h3>Check the record.</h3><p>Read the highlighted passage. Inspect identity and uncertainty, correct fields when needed, and save your review decision.</p><span className="welcome-step-detail">Original extraction stays unchanged</span></li>
-          <li><div className="welcome-step-top"><span>03</span><Download size={23}/></div><h3>Keep the trail.</h3><p>Explore reported associations and download your records with citations, review status, source spans, and recorded uncertainty.</p><span className="welcome-step-detail">CSV, JSON, or a printable report</span></li>
+          <li><div className="welcome-step-top"><span>03</span><Download size={23}/></div><h3>Keep the trail.</h3><p>Explore reported associations and download your records with citations, review status, source spans, and recorded uncertainty.</p><span className="welcome-step-detail">PDF, DOCX or DOC, with citations and aligned fields</span></li>
         </ol>
       </section>
 

@@ -1,0 +1,11 @@
+import {mkdir,copyFile} from 'node:fs/promises';
+import {createRequire} from 'node:module';
+import {dirname,join} from 'node:path';
+const require=createRequire(import.meta.url);
+const out=new URL('../public/document-assets/',import.meta.url);
+await mkdir(out,{recursive:true});
+const fonts=dirname(require.resolve('dejavu-fonts-ttf/package.json'));
+for(const name of ['DejaVuSans.ttf','DejaVuSans-Bold.ttf'])await copyFile(join(fonts,'ttf',name),new URL(name,out));
+await copyFile(join(fonts,'LICENSE'),new URL('FONT-LICENSE.txt',out));
+await copyFile(require.resolve('pdfjs-dist/build/pdf.worker.min.mjs'),new URL('pdf.worker.min.mjs',out));
+await copyFile(join(dirname(require.resolve('pdfjs-dist/package.json')),'LICENSE'),new URL('PDFJS-LICENSE.txt',out));

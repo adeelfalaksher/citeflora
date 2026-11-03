@@ -6,7 +6,7 @@ Reviewed 3 November 2026. Results describe the checked build and deployed servic
 
 | Check | Result |
 | --- | --- |
-| `pnpm test` | 59 of 59 developer-authored regression and API checks pass |
+| `pnpm test` | 67 of 67 developer-authored regression, document and API checks pass |
 | `pnpm typecheck` | TypeScript no-emit check passes |
 | `pnpm lint` | Full configured ESLint check passes |
 | `pnpm build:vercel` | Standard Next.js 16 / React 19 production build passes |
@@ -93,3 +93,11 @@ The audit release was deployed from public commit `1c226284245bf884b19f5a11f9252
 A full licensed narrative import uncovered missing cached author attribution. The cache parser had required `contrib-type="author"`, while this publisher marks the surrounding contributor group. The corrected generator and live importer recognize author groups, preserve name order, exclude editors/references, and reject automatic imports when author attribution cannot be prepared. A regression using both name-element orders passes. The rebuilt cached text and XML digests are unchanged. Migration 0001 repairs only an empty author field on the exact Hajira DOI and narrative digest, recording an audit event. Its idempotence and unchanged text/hash were checked locally before applying. The suite now passes 59 checks.
 
 Browser audit after the attribution repair confirmed the corrected author name in the saved narrative, a live Europe PMC result, 32 narrative candidates, the flagged multi-plant passage, accepted-only mapping, and a genuine zero-candidate unsupported-name import with the explicit limit message. The guide saved revision 5 and generated JSON successfully. Fifteen actual 3:2 screenshots were captured. The visible Devpost upload control successfully accepted all fifteen images; the initial hidden-input attempt had failed. The cover and required presentation PDF also uploaded successfully. These Devpost uploads do not establish completion of Citeflora's own browser file-import flow, which remains a separate unverified check.
+
+## Formatted document update, 3 November 2026
+
+The main download interface now generates PDF, DOCX and genuine OLE Word 97–2003 DOC files from a fresh authenticated workspace export. Reports include a source register, unchanged supporting passages, original and reviewed fields, uncertainty, digests, offsets and an activity register. PDF uses embedded Unicode fonts and measured wrapping; DOCX uses native Word tables and page-number fields. The legacy DOC was independently read with word-extractor. The compatibility CSV/JSON/HTML API remains available.
+
+File input now converts PDF, DOC, DOCX, CSV, TXT/Markdown, HTML and JSON locally before the user inspects and saves the extracted text. Binary files are limited to 5 MB, other files to 250 KB, PDF length to 100 pages and extracted text to 80,000 characters. Scanned PDFs need OCR. Password-protected or damaged documents fail explicitly. JSON accepts one attributable source, and file permission is not accepted from uploaded metadata. HTML extraction does not render scripts or load remote assets. DOCX expanded size and legacy DOC sector chains are bounded.
+
+Eight added checks cover report preservation, real PDF/DOCX/DOC bytes and structures, independent DOC reading, text/CSV/JSON/HTML imports, Unicode Word input and malformed/oversized files. The 75-record PDF was rendered for inspection; all extracted text bounds stayed within the page margins. Browser file-dialog and download checks for this update will be recorded after deployment.
