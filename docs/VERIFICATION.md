@@ -21,9 +21,9 @@ CSV retains original fields, reviewer corrections, source authors, licence metad
 
 ## Public deployment and hosted API
 
-The final Vercel deployment for source commit `69e0c66c97af6df72dff61172b78fbb9bae0c469` reached `READY` as deployment `dpl_6krj4BQHf82As1NK5QNkrLT2yNDm`. The public entry point is [citeflora.vercel.app](https://citeflora.vercel.app). It uses the standalone API at `https://citeflora-api.adeelfalaksher900.workers.dev` with persistent Cloudflare D1. This release includes the revised interface, refreshed cover, pitch files and canonical Next route generation before type checking.
+The current audited application release, source commit `84139f9986745dc32b2414b6a8c12f31842d1bc1`, reached `READY` as Vercel deployment `dpl_Bx2Mow1BoY8gM6xMhZhqkXezdpbe`. The public entry point is [citeflora.vercel.app](https://citeflora.vercel.app). It uses the standalone API at `https://citeflora-api.adeelfalaksher900.workers.dev` with persistent Cloudflare D1. The matching Worker upload completed at 11:35:57 UTC on 3 November 2026. Its existing D1 binding and server secret were retained. The empty-author repair migration changed one exact source attribution and added its audit event; source text, digest and reviews were preserved.
 
-This command passed against the actual Vercel domain and its Cloudflare API/D1 path. The extended hosted run completed at 04:21 UTC on 3 November 2026:
+This command passed against the actual Vercel domain and its Cloudflare API/D1 path. The current extended hosted run completed at 11:38:16 UTC on 3 November 2026. Its dated result is in [hosted-verification.json](hosted-verification.json):
 
 ```sh
 python3 scripts/verify-hosted.py --url https://citeflora.vercel.app
@@ -40,6 +40,9 @@ The run verified:
 - HTTP 200 JSON, CSV and HTML exports. CSV and HTML contained the saved correction and source attribution.
 - A second independent workspace’s record list excluded the first workspace’s claim, and attempting to modify that claim returned 404.
 - A stale review revision returned 409, and a cross-origin write returned 403.
+- Taxonomy provenance survived a note-only edit, including its audit record.
+- Ordinary mentions, adverse effects, negative statements and mixed-polarity contexts were guarded conservatively; unsupported-name imports reported zero honestly and oversized passages were rejected.
+- All snapshot digests and UTF-16 entity spans matched; the prepared licensed narrative contained non-empty verified author attribution.
 
 The script keeps cookies in memory and uses developer-owned QA text. It writes its current result to `outputs/hosted-verification.json`. It does not test browser file-dialog completion.
 
@@ -59,7 +62,7 @@ A fresh production dependency audit reported 0 known advisories on 3 November 20
 
 ## Continuous integration
 
-The published final source commit `69e0c66c97af6df72dff61172b78fbb9bae0c469` passed GitHub Actions run [41596319514](https://github.com/adeelfalaksher900-creator/citeflora/actions/runs/41596319514). CI runs the regression tests, type generation and TypeScript, ESLint, the Vercel build, standalone API bundle and legacy Sites build. Both build orders were also checked locally with canonical route generation before TypeScript.
+The earlier source commit `69e0c66c97af6df72dff61172b78fbb9bae0c469` passed GitHub Actions run [41596319514](https://github.com/adeelfalaksher900-creator/citeflora/actions/runs/41596319514). A completed GitHub Actions run for the later audit commit has not been verified. The current audit passed regression tests, type generation and TypeScript, ESLint, the Vercel build, standalone API bundle and legacy Sites build locally. Both build orders were checked with canonical route generation before TypeScript.
 
 Branch-protection settings were not changed. CODEOWNERS and contribution instructions request maintainer review, but an enforced protection rule is not claimed.
 
@@ -71,9 +74,9 @@ No domain-expert validation, community endorsement, user study, independently la
 
 ## Submission state
 
-The Devpost title and tagline were saved. The details form was populated previously, but its required video URL prevented the normal save. The prepared story is in [DEVPOST.md](DEVPOST.md). No placeholder video URL or final submission has been provided.
+The normal Devpost editor saved the project story, six stack tags, live-app/GitHub links, cover and fifteen captioned actual screenshots. Each gallery image is exactly 3:2 and below 5 MB. Captions were matched visually to their corresponding screens and saved within Devpost's 140-character limit. The eight-slide PDF is saved under Additional info, and its persisted filename was verified after reopening that section. The entry remains DRAFT at 3/5 steps. The project-details video URL and final submission are incomplete. No placeholder video URL, final terms acceptance or final submission has been supplied.
 
-The 1536 × 1024 cover and eight-slide editable deck/PDF have been refreshed for the revised interface and Vercel hosting. Thumbnail upload did not complete. Team count, individual contributions and first-day Discord registration still need team verification. The user authorized video and gallery production after the current audit and fixes. These deliverables and the draft update are in progress.
+A real browser walkthrough with natural English narration and 1920 × 1080 MP4 delivery was requested in [Manus task XBb6DtZRww7xaf4URHRx2L](https://manus.im/app/XBb6DtZRww7xaf4URHRx2L). A completed MP4 has not yet been delivered or checked. The user will upload it to YouTube, add the URL and submit. Two members are listed on Devpost; individual contributions and first-day Discord registration still need team verification.
 
 ## Working-product audit, 3 November 2026
 
@@ -89,4 +92,4 @@ The audit release was deployed from public commit `1c226284245bf884b19f5a11f9252
 
 A full licensed narrative import uncovered missing cached author attribution. The cache parser had required `contrib-type="author"`, while this publisher marks the surrounding contributor group. The corrected generator and live importer recognize author groups, preserve name order, exclude editors/references, and reject automatic imports when author attribution cannot be prepared. A regression using both name-element orders passes. The rebuilt cached text and XML digests are unchanged. Migration 0001 repairs only an empty author field on the exact Hajira DOI and narrative digest, recording an audit event. Its idempotence and unchanged text/hash were checked locally before applying. The suite now passes 59 checks.
 
-Browser audit after the attribution repair confirmed the corrected author name in the saved narrative, a live Europe PMC result, 32 narrative candidates, the flagged multi-plant passage, accepted-only mapping, and a genuine zero-candidate unsupported-name import with the explicit limit message. The guide saved revision 5 and generated JSON successfully. Fifteen actual 3:2 screenshots were captured. The normal Devpost project editor saved the story, six stack tags and live-app/GitHub links while the hackathon entry remained incomplete. Additional info requires a file upload. Browser file upload remains blocked by the local file-access configuration; no uploaded-gallery or final-submission claim is made.
+Browser audit after the attribution repair confirmed the corrected author name in the saved narrative, a live Europe PMC result, 32 narrative candidates, the flagged multi-plant passage, accepted-only mapping, and a genuine zero-candidate unsupported-name import with the explicit limit message. The guide saved revision 5 and generated JSON successfully. Fifteen actual 3:2 screenshots were captured. The visible Devpost upload control successfully accepted all fifteen images; the initial hidden-input attempt had failed. The cover and required presentation PDF also uploaded successfully. These Devpost uploads do not establish completion of Citeflora's own browser file-import flow, which remains a separate unverified check.
