@@ -1,5 +1,5 @@
 {
-  "verifiedAt": "2026-11-03T04:21:02.468724+00:00",
+  "verifiedAt": "2026-11-03T11:38:16.214881+00:00",
   "url": "https://citeflora.vercel.app",
   "crossWorkspaceReadAndWriteIsolationVerified": true,
   "staleRevisionRejected": true,
@@ -12,20 +12,28 @@
   "sourceDigestVerified": true,
   "ambiguityAndNegationVerified": true,
   "reviewPersisted": true,
+  "taxonomyProvenanceSurvivesNoteEdit": true,
+  "ordinaryAdverseAndNegativeContextsGuarded": true,
+  "mixedPolarityRemainsUncertain": true,
+  "zeroResultImportCountHonest": true,
+  "oversizedPassageRejected": true,
+  "allSnapshotDigestsAndUtf16EntitySpansVerified": true,
+  "engineVersion": "citeflora-rules-1.0.2",
   "taxonomyMode": "reference-snapshot",
   "licensedNarrativePrepared": true,
+  "narrativeAuthorAttributionVerified": true,
   "exports": {
     "json": {
       "status": 200,
-      "characters": 94221
+      "characters": 104556
     },
     "csv": {
       "status": 200,
-      "characters": 111750
+      "characters": 115002
     },
     "html": {
       "status": 200,
-      "characters": 68566
+      "characters": 75988
     }
   },
   "scope": "Real hosted API and D1 checks. Browser file-dialog completion is a separate, unverified check."

@@ -58,7 +58,21 @@ def article(pmcid, cache=None):
         return None
     doi = text(root.find('.//article-id[@pub-id-type="doi"]'))
     year = next((int(text(y)) for y in root.findall('.//pub-date/year') if text(y).isdigit()), 0)
-    names = [text(n.find('surname')) + ' ' + text(n.find('given-names')) for n in root.findall('.//contrib[@contrib-type="author"]/name')]
+    names = []
+    for group in root.findall('.//article-meta/contrib-group'):
+        if group.get('content-type', 'author').lower() not in ['author', 'authors']:
+            continue
+        for contributor in group.findall('contrib'):
+            if contributor.get('contrib-type', 'author').lower() != 'author':
+                continue
+            name = contributor.find('name')
+            if name is None:
+                name = contributor.find('string-name')
+            author = ' '.join(filter(None, [text(name.find('surname')), text(name.find('given-names'))])) if name is not None else text(contributor.find('collab'))
+            if author and author not in names:
+                names.append(author)
+    if not names or len(', '.join(names)) > 500:
+        return None
     return dict(pmcid=pmcid, title=text(root.find('.//article-title')), authors=', '.join(names), year=year, doi=doi,
                 url='https://doi.org/' + doi if doi else 'https://europepmc.org/article/PMC/' + pmcid,
                 licence='CC0 1.0' if cc0 else 'CC BY 4.0', text=narrative, format='text', region='', evidenceType='traditional-report',

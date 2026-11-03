@@ -60,7 +60,23 @@ export async function openArticle(pmcid:string) {
   const full=paragraphs.join('\n\n');const text=full.slice(0,75000);
   const title=xmlText(xml.match(/<article-title\b[^>]*>([\s\S]*?)<\/article-title>/i)?.[1]||pmcid);
   const doi=xmlText(xml.match(/<article-id\b[^>]*pub-id-type="doi"[^>]*>([\s\S]*?)<\/article-id>/i)?.[1]||'');
-  const authors=[...xml.matchAll(/<name\b[^>]*>\s*<surname>(.*?)<\/surname>\s*<given-names[^>]*>(.*?)<\/given-names>/gi)].slice(0,12).map(m=>xmlText(m[1])+' '+xmlText(m[2])).join(', ');
+  const metadata=xml.match(/<article-meta\b[^>]*>([\s\S]*?)<\/article-meta>/i)?.[1]||'';
+  const names:string[]=[];
+  for(const group of metadata.matchAll(/<contrib-group\b([^>]*)>([\s\S]*?)<\/contrib-group>/gi)){
+    const role=group[1].match(/\bcontent-type=["']([^"']+)["']/i)?.[1];
+    if(role&&!/^authors?$/i.test(role))continue;
+    for(const contributor of group[2].matchAll(/<contrib\b([^>]*)>([\s\S]*?)<\/contrib>/gi)){
+      const type=contributor[1].match(/\bcontrib-type=["']([^"']+)["']/i)?.[1];
+      if(type&&type.toLowerCase()!=='author')continue;
+      const name=contributor[2].match(/<(?:name|string-name)\b[^>]*>([\s\S]*?)<\/(?:name|string-name)>/i)?.[1]||'';
+      const surname=xmlText(name.match(/<surname\b[^>]*>([\s\S]*?)<\/surname>/i)?.[1]||'');
+      const given=xmlText(name.match(/<given-names\b[^>]*>([\s\S]*?)<\/given-names>/i)?.[1]||'');
+      const author=[surname,given].filter(Boolean).join(' ')||xmlText(contributor[2].match(/<collab\b[^>]*>([\s\S]*?)<\/collab>/i)?.[1]||'');
+      if(author)names.push(author);
+    }
+  }
+  const authors=[...new Set(names)].join(', ');
+  if(!authors||authors.length>500)throw new InputError('Author attribution could not be prepared within the supported limits. Open the publication and import a permitted excerpt with its citation manually.');
   const year=Number(xml.match(/<pub-date\b[\s\S]*?<year>(\d{4})<\/year>/i)?.[1]||0);
   return {title,authors,year,doi,url:doi?'https://doi.org/'+doi:'https://europepmc.org/article/PMC/'+pmcid,
     text,format:'text',licence:cc0?'CC0 1.0':'CC BY 4.0',licenceUrl:cc0?'https://creativecommons.org/publicdomain/zero/1.0/':'https://creativecommons.org/licenses/by/'+licence![1]+'/',

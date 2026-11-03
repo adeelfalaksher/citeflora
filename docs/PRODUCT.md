@@ -92,6 +92,6 @@ The seven published criteria are scientific relevance, innovation, technical imp
 
 The recorded deadline is 8 November 2026, 09:00 UTC, 14:00 Pakistan time. Teams require 2–5 registered members. First-day Discord registration, current team count and individual contributions remain for the team to verify; an existing Devpost registration does not establish them.
 
-Required materials include a Devpost page, public repository, documentation/data licences, a video of at most 10 minutes and a deck of at most 10 slides. AI assistance must be disclosed accurately. The title and tagline are saved as a draft. The details form requires a video URL before saving, so the prepared story remains in [DEVPOST.md](DEVPOST.md). No video URL is invented and no final submission has been performed.
+Required materials include a Devpost page, public repository, documentation/data licences, a video of at most 10 minutes and a deck of at most 10 slides. AI assistance must be disclosed accurately. The title and tagline are saved as a draft. The submission-specific details form requires a video URL, while the normal project editor allows the story and links to be saved before that URL is ready. No video URL is invented and no final submission has been performed.
 
 The 3:2 cover and eight-slide editable deck/PDF now show the revised interface and Vercel deployment. The user authorized a real product video and 15-image gallery after the live audit and fixes. Production is in progress; final submission remains with the team.

@@ -37,7 +37,7 @@ Common-name ambiguity, several plants in one sentence, inherited table cells and
 
 The starter contains 43 selected rows from two CC BY studies, 18 source-reported taxa and 75 candidates. All 75 passage spans match their snapshots and both digests reproduce. These are integrity results, not a scientific accuracy benchmark.
 
-The current local suite passes 58 regression and API checks, TypeScript checking, ESLint and both production builds. A real hosted check through Vercel verified a three-candidate import, ambiguity and negation flags, a saved correction, source hashing, a dated taxonomy reference, licensed narrative preparation and all three exports. It also verified workspace isolation, stale-review rejection and cross-origin write rejection. A public browser run reached a saved review and CSV export through the guide, with mobile navigation checked at 390 CSS px. Final-release browser and scientific-validation limits are recorded in the [verification report](https://github.com/adeelfalaksher900-creator/citeflora/blob/main/docs/VERIFICATION.md).
+The current local suite passes 59 regression and API checks, TypeScript checking, ESLint and both production builds. A real hosted check through Vercel verified a three-candidate import, ambiguity and negation flags, a saved correction, source hashing, a dated taxonomy reference, licensed narrative preparation and all three exports. It also verified workspace isolation, stale-review rejection and cross-origin write rejection. The audit also verified taxonomy provenance after a note edit, ordinary/adverse/negative context screening, honest zero counts, passage bounds and author attribution. A browser run completed a saved review and JSON export, followed by a real Europe PMC search and a 32-candidate licensed narrative import. Mobile navigation was checked at 390 CSS px. Final-release browser and scientific-validation limits are recorded in the [verification report](https://github.com/adeelfalaksher900-creator/citeflora/blob/main/docs/VERIFICATION.md).
 
 ## What we learned
 
@@ -51,7 +51,7 @@ Independent evaluation with ethnobotany and pharmacognosy researchers; broader m
 
 Starter studies: Tsioutsiou, Cheilari and Aligiannis (2023), DOI 10.3389/fphar.2023.1225580; Jabeen and colleagues (2024), DOI 10.3390/plants13101379. Each source retains author credit, licence, adaptation notes and a publication link. New code is MIT-licensed. Excerpts and third-party software retain their own terms.
 
-Research, design, development and verification used significant ChatGPT/Codex assistance. Human team members retain responsibility for review and submission. Individual human programming or research contributions are not claimed without confirmation. The maintained Sites/Vinext starter predates the hackathon. The extraction engine, corpus workflow, API, schema, proxy boundary, guided review interface, exports and checks were developed for Citeflora.
+Research, design, development, verification and submission copy used significant ChatGPT/Codex assistance. Project artwork was generated with imagegen. Gallery screenshots show the actual application. Narration is prepared with a built-in synthetic voice. Team members are responsible for final review and submission. The maintained Sites/Vinext starter predates the hackathon. The extraction engine, corpus workflow, API, schema, proxy boundary, guided review interface, exports and checks were developed for Citeflora.
 
 Live app: [citeflora.vercel.app](https://citeflora.vercel.app)
 
@@ -59,4 +59,4 @@ Source: [github.com/adeelfalaksher900-creator/citeflora](https://github.com/adee
 
 ## Preparation status
 
-This is the prepared story. The existing title and tagline are saved, but the details form's mandatory video URL has prevented its normal save. No placeholder URL is provided and no final submission has been performed. The 3:2 cover and eight-slide editable deck/PDF have been refreshed for the revised interface and Vercel deployment. Full video and 15-image gallery production remain deferred until project approval. Team membership, contributions and first-day Discord registration still require team verification.
+The normal project edit form permits saving the story and project links before the video URL is available. Fifteen captioned images have been captured from the live application. Media upload and final recording are pending connection recovery. No placeholder video URL or final hackathon submission has been supplied. The eight-slide deck/PDF and 3:2 cover are prepared. Two members are listed on Devpost; individual contributions and timely registration remain for the team to verify.

@@ -132,7 +132,7 @@ node scripts/evaluate.mjs
 python3 scripts/verify-hosted.py --url https://citeflora.vercel.app
 ```
 
-The 50 developer-authored checks cover extraction scope, ambiguity, negation, Unicode offsets, DOI deduplication, validation, spreadsheet escaping, session isolation, revision conflicts, audit persistence, exports and the proxy/Worker trust boundary. API checks execute the real API against an in-memory SQLite adapter for D1. These do not replace browser or hosted tests and are not an independent scientific accuracy benchmark. See the dated [verification report](docs/VERIFICATION.md).
+The 59 developer-authored checks cover extraction scope, ambiguity, negation, Unicode offsets, DOI deduplication, validation, spreadsheet escaping, session isolation, revision conflicts, audit persistence, exports and the proxy/Worker trust boundary. API checks execute the real API against an in-memory SQLite adapter for D1. These do not replace browser or hosted tests and are not an independent scientific accuracy benchmark. See the dated [verification report](docs/VERIFICATION.md).
 
 To refresh the attributed material:
 
@@ -156,7 +156,7 @@ The interface downloads an empty template. Narratives use sentence scope; tables
 ## Limits
 
 - English rules have a bounded name list and known-genus fallback. Complex grammar, pronouns and many names are unsupported. This is not a trained AI model.
-- Imports allow 80,000 source characters and 90 proposed records. Truncation is marked. Workspaces allow up to 20 sources and 500 candidates.
+- Imports allow 80,000 source characters, 6,000 characters per sentence/table-row passage, and 90 proposed records. Truncation is marked. Workspaces allow up to 20 sources and 500 candidates.
 - A browser session lasts 30 days. There are no accounts, account recovery or cross-device synchronization. Workspaces are tied to the hosting domain; exports provide portable access.
 - The one-paper catalogue is not a literature index. Narrative preparation excludes tables and figures and retains at most 75,000 characters.
 - Automatic literature imports support explicit CC BY 4.0 or CC0 terms. Users review classification and context. Publication licences do not grant rights to restricted community knowledge.

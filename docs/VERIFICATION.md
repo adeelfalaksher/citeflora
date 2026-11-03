@@ -6,7 +6,7 @@ Reviewed 3 November 2026. Results describe the checked build and deployed servic
 
 | Check | Result |
 | --- | --- |
-| `pnpm test` | 58 of 58 developer-authored regression and API checks pass |
+| `pnpm test` | 59 of 59 developer-authored regression and API checks pass |
 | `pnpm typecheck` | TypeScript no-emit check passes |
 | `pnpm lint` | Full configured ESLint check passes |
 | `pnpm build:vercel` | Standard Next.js 16 / React 19 production build passes |
@@ -84,3 +84,9 @@ Engine 1.0.2 conservatively marks unsupported relations, adverse-effect contexts
 All eight added regression checks passed, bringing the suite from 50 to 58. TypeScript, ESLint, the Next production build and standalone API build passed locally. The starter remains 75 candidates, 60 groups and 75 valid source/entity spans across the two unchanged attributed snapshots. Updated hosted verification adds challenge contexts, zero results, passage bounds, taxonomy retention and all UTF-16 spans. Deployment and fresh browser checks are recorded below when completed.
 
 The practical function is organizing a reviewable evidence collection. There is no measured time-saving claim or demonstrated user-benefit result: no external researcher study has been performed. The tool's real persistence, imports and exports do not make its bounded rules scientifically comprehensive.
+
+The audit release was deployed from public commit `1c226284245bf884b19f5a11f92523eeaf965740`. Vercel deployment `dpl_AyS4RcjFXrMb1oH8K3X4b9Z1JKCN` reached READY. The Cloudflare Worker upload completed at 10:54 UTC with its existing D1 binding and server secret retained. The extended hosted script passed at 10:57:12 UTC on 3 November 2026 against the public Vercel domain and engine 1.0.2. Every added context/provenance check, isolated workspace and export check passed. The exact dated result is in hosted-verification.json. The legacy Sites build and post-build TypeScript check also passed.
+
+A full licensed narrative import uncovered missing cached author attribution. The cache parser had required `contrib-type="author"`, while this publisher marks the surrounding contributor group. The corrected generator and live importer recognize author groups, preserve name order, exclude editors/references, and reject automatic imports when author attribution cannot be prepared. A regression using both name-element orders passes. The rebuilt cached text and XML digests are unchanged. Migration 0001 repairs only an empty author field on the exact Hajira DOI and narrative digest, recording an audit event. Its idempotence and unchanged text/hash were checked locally before applying. The suite now passes 59 checks.
+
+Browser audit after the attribution repair confirmed the corrected author name in the saved narrative, a live Europe PMC result, 32 narrative candidates, the flagged multi-plant passage, accepted-only mapping, and a genuine zero-candidate unsupported-name import with the explicit limit message. The guide saved revision 5 and generated JSON successfully. Fifteen actual 3:2 screenshots were captured. The normal Devpost project editor saved the story, six stack tags and live-app/GitHub links while the hackathon entry remained incomplete. Additional info requires a file upload. Browser file upload remains blocked by the local file-access configuration; no uploaded-gallery or final-submission claim is made.
