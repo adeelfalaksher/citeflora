@@ -1,10 +1,10 @@
 # Citeflora product and technical plan
 
-Created 3 November 2026 for EthnoHack, Track 1: Traditional Knowledge Mining.
+Updated 3 November 2026 for EthnoHack, Track 1: Traditional Knowledge Mining.
 
 ## Problem and choice
 
-An extracted medicinal-plant relationship is difficult to audit when its source passage, plant identity, preparation, and research context disappear. Citeflora is a research review workspace. It records reported traditional uses, not treatment recommendations.
+A plant-use relationship becomes difficult to audit when its passage, identity, preparation and research context disappear. Citeflora is a review workspace for published traditional knowledge. It helps researchers organize reported uses with an inspectable source trail. It does not recommend treatments.
 
 Five directions were compared before implementation:
 
@@ -14,61 +14,84 @@ Five directions were compared before implementation:
 | Natural-product target screening | Technical drug-discovery workflow | Meaningful validation needs specialist assays and datasets | Excluded |
 | Medicinal-plant conservation map | Relevant sustainability problem | Occurrence bias makes threat claims unreliable | Excluded |
 | Patient-facing herbal chatbot | Easy access to information | Clinical safety and evidence quality are difficult to establish | Excluded |
-| Passage-linked extraction and review | Auditable research records with uncertainty preserved | English rules have bounded recall | Selected |
+| Passage-linked extraction and review | Auditable records with uncertainty preserved | English rules have bounded recall | Selected |
 
-The differentiator is a reviewable chain from an unchanged source snapshot to each candidate plant-use record. Ambiguous common names and genus-level mentions remain explicit. Duplicate citations do not become independent evidence.
+The differentiator is the chain from an unchanged snapshot to a proposed record, a human decision and an attributed export. Common-name ambiguity and genus-level mentions remain explicit. Duplicate citations do not become independent evidence.
+
+## People and workflow
+
+Researchers, students and curators can add permitted English sources, inspect candidates, record uncertainty or corrections, and export a collection for further work. The useful output is a reviewable research record, not an answer about whether a remedy works.
+
+Judges and first-time visitors use **Try the guided example** at [citeflora.vercel.app](https://citeflora.vercel.app). No end-user account or API key is required. The guide uses a real record from the Pelion starter paper:
+
+| Step | User action | Actual result |
+| --- | --- | --- |
+| Open the study | Inspect citation, licence, regional context and selected-table scope | Source record and unchanged text snapshot |
+| Check the passage | Read the proposed *Hypericum perforatum* and wounds relationship | Highlighted plant and use words at UTF-16 span 1070–1220 |
+| Save your review | Accept, reject or keep pending; optionally add notes or corrections | New server revision and audit event; guide advances after success |
+| Export the evidence | Choose CSV, JSON or HTML | Workspace export with saved review states; completion follows a successful response |
+
+The target remains selected after a decision. Replaying the guide does not reset reviews. The full workbench retains source search, filters, imports, taxonomy checks, evidence mapping and exports. The guide adds a clear route through these capabilities.
 
 ## Acceptance criteria
 
-1. A new visitor starts an isolated, server-persisted research workspace without an account.
-2. The initial corpus contains selected rows from two explicitly licensed research papers. It is labelled as a starter corpus, not an exhaustive dataset or new fieldwork.
-3. Users import their own permitted English text or supported UTF-8 files with title, citation, licence, and regional context.
-4. A versioned deterministic extractor proposes plant-use records and preserves UTF-16 source and entity offsets.
-5. Users inspect the source passage and record accepted, rejected, or pending extraction decisions, notes, and optional identity resolutions.
-6. GBIF name matching is an on-demand external taxonomy suggestion. Its name-match score is never a probability of medical efficacy or historical identification.
-7. A literature search queries Europe PMC, with references and external links. API failures are shown honestly.
-8. An evidence map groups claims by plant and use, deduplicating source DOIs. It shows associations, not causal or clinically validated relationships.
-9. CSV, JSON, and a printable HTML evidence report contain source attribution, hashes, uncertainty, review decisions, and audit history.
-10. Core extraction, tenant isolation, revision conflicts, input validation, and real user journeys are verified.
+1. Explain the product and the next useful action before showing a populated workbench.
+2. Create an isolated, server-persisted workspace without an end-user account.
+3. Label the two-paper, 43-row starter clearly. Its 18 source-reported taxa and 75 candidates are not an exhaustive dataset or new fieldwork.
+4. Import permitted English text and supported UTF-8 files with citation, permission basis and context.
+5. Preserve snapshots, SHA-256 digests and exact UTF-16 source/entity offsets.
+6. Record accepted, rejected or pending decisions with separate corrections, notes, revisions and audit history.
+7. Present GBIF as a taxonomy suggestion. Its score must not represent efficacy or historical identification probability.
+8. Distinguish live Europe PMC results from dated fallback material and check supported licences before narrative preparation.
+9. Deduplicate DOIs and exclude negative, speculative, rejected and unassigned records from the positive map.
+10. Export attribution, uncertainty, original/reviewed fields, spans and review state. JSON and HTML include the latest 200 audit events.
+11. Verify isolation, the hosting trust boundary, conflicts, safe exports and public API workflows. Record browser and scientific validation separately.
 
-## Architecture
+## Architecture and deployment
 
-The app uses the Sites Vinext/React starter on Cloudflare Workers, with Cloudflare D1. Supabase would add external project and authentication dependencies. Firebase would add a separate document-data and identity layer. D1 fits the bounded relational review workflow and the existing Worker deployment.
-
-Browser UI calls same-origin API routes. The server owns sessions, validation, extraction, database writes, and fixed-host external API requests. No privileged key is delivered to the browser. A random HttpOnly session cookie identifies a workspace, and only its SHA-256 hash is stored. Each query is scoped to that workspace. Review writes use revision checks and an audit event in one batch.
+The interface at `https://citeflora.vercel.app` runs standard Next.js 16 and React 19 on Vercel. Browser requests remain same-origin through its API proxy. The standalone API at `https://citeflora-api.adeelfalaksher900.workers.dev` runs on Cloudflare Workers with persistent D1 binding `DB`.
 
 ```mermaid
 flowchart TD
-  A[Researcher browser] --> B[Worker API]
-  B --> C[Input and session validation]
-  C --> D[Versioned extractor]
-  C --> E[(D1 workspace records)]
-  D --> E
-  B --> F[Europe PMC literature]
-  B --> G[GBIF taxonomy]
-  E --> H[Attributed evidence exports]
+  A[Browser workspace] --> B[Next.js API proxy on Vercel]
+  B --> C[Authenticated Cloudflare Worker]
+  C --> D[Validation and rule engine]
+  D --> E[(D1 workspace records)]
+  C --> F[Europe PMC literature]
+  C --> G[GBIF taxonomy]
+  E --> H[Attributed exports]
 ```
+
+The proxy validates exact-origin JSON writes, an endpoint allowlist and bounded bodies. It forwards only the application session cookie, authenticates with a server secret, and supplies a rate-limit bucket derived from the Vercel platform client address. The Worker rejects unauthenticated callers and untrusted bucket values. Privileged values are not sent to the browser.
+
+Operators configure `CITEFLORA_API_URL` and `CITEFLORA_PROXY_SECRET` in Vercel, with the matching secret in the Worker. End users need neither. Research requests use fixed Europe PMC and GBIF hosts. D1 statements use bound values and workspace scoping. Review changes and audit events share an atomic batch with expected-revision checks.
+
+D1 retains the bounded relational workflow without adding accounts. Supabase and Firebase were considered but would add identity and service dependencies beyond the current single-browser workspace. Sites/Vinext development remains optional; Vercel is the public entry point.
 
 ## Data model
 
-Workspaces own sessions, sources, claims, and audit events. Sources retain immutable text and a content digest. Claims point to a source and retain extraction offsets, flags, and a review revision. Rate limits contain short-lived hashed keys. Schema changes are migration-owned.
-
-## Risks and limits
-
-English rule-based extraction has limited vocabulary and relation scope. It is not a learned medical model. Same-sentence co-occurrence is a candidate relationship requiring review. No clinical validation is claimed. Historical names do not establish species identity. A source licence does not grant rights to restricted community knowledge. Users should import public or explicitly permitted research material, never private patient records or restricted traditional knowledge.
-
-The workspace follows one browser session, with a 30-day cookie. There are no user accounts or cross-device sync promises. Exports are the portable record. External services may be unavailable. Initial evaluation is a small developer-authored fixture set, not an independent research benchmark.
+Workspaces own sessions, sources, claims and audit events. Session tokens have 256 bits of randomness; only their SHA-256 digests are stored. Sources retain immutable text and a digest. Candidates retain spans, flags and review revisions. Corrections sit separately from original fields. Rate limits use short-lived hashed keys. Schema changes are migration-owned.
 
 ## Design decisions
 
-The primary question is: which extraction should I review next, and what passage supports it? The source passage and candidate sit beside one another. The signature visual is the claim's source-to-plant-to-use lineage, backed by real records. The design-taste-frontend app direction is Achromatic ledger, seed 750826046, with a cool grey ground, a small blue data accent, and Geist type. Mobbin references were Sprig's study search flow and Perplexity's academic search flow. Their navigation, filters, and reading hierarchy informed an original layout. No reference artwork or template code is copied.
+The entry point uses an editorial research fieldbook: warm paper surfaces, carbon ink, a vermilion action accent and strong Geist typography. The real attributed passage is the main visual, explaining the input and output. The workbench carries the same hierarchy and leads with source review rather than unexplained metrics.
 
-## Hackathon constraints
+Mobbin references included Mintlify onboarding and Sana's adding-source flow. Progressive disclosure, action hierarchy and the transition from entry point to a task informed an original implementation. No reference artwork or proprietary assets are copied. Native mobile, macOS and molecular-discovery features are outside this web product.
 
-Official pages checked: overview, complete rules, resources, schedule, updates, project gallery, and both current discussion threads. The gallery is not published and no previous EthnoHack winners were found. Related GBIF Ebbe Nielsen winners emphasize practical workflows, data quality, and reproducibility; they are comparisons, not EthnoHack winners.
+## Risks and limits
 
-Seven judging criteria are published: scientific relevance, innovation, technical implementation, data science quality, feasibility, impact, and presentation. No numerical weights are currently published. There is no required sponsor technology.
+The deterministic English engine has bounded vocabulary and relation scope. It is not a trained AI model. Same-sentence co-occurrence is a candidate requiring review. Negation rules are incomplete, historical names do not establish specimen identity, and abbreviations may need the paper's own key. No clinical or independent expert validation is claimed.
 
-Submission deadline shown by Devpost: 8 November 2026, 09:00 UTC, 14:00 Pakistan time. Teams must have 2–5 registered members. An organizer discussion also asks teams to register in Discord on the first day. Registration timing and Discord team status are not inferred from an existing Devpost registration.
+The browser session expires after 30 days. There are no accounts, recovery or cross-device synchronization. Exports are portable records. External services may fail. Publication licences do not grant rights to restricted community knowledge. Only public or explicitly permitted material belongs in this workspace.
 
-Required submission materials: Devpost page, public source repository, documentation and data licences, video of at most 10 minutes, and deck of at most 10 slides. AI-assisted development must be disclosed accurately. The Devpost overview is saved as a draft. The details form requires a video URL before saving, so the full prepared story remains in docs/DEVPOST.md until the team approves video production. Full video and 15-image gallery production are deferred until user approval. A 3:2 thumbnail is prepared before review.
+## Hackathon and submission boundaries
+
+Recorded official research covers the overview, complete rules, resources, schedule, updates, gallery and discussion threads. No previous EthnoHack winners were found. Related GBIF Ebbe Nielsen projects are comparisons, not EthnoHack winners.
+
+The seven published criteria are scientific relevance, innovation, technical implementation, data science quality, feasibility, impact and presentation. No numerical weights were published in the checked material. No mandatory sponsor technology was identified. These are recorded requirements, not a prediction of judges' scores.
+
+The recorded deadline is 8 November 2026, 09:00 UTC, 14:00 Pakistan time. Teams require 2–5 registered members. First-day Discord registration, current team count and individual contributions remain for the team to verify; an existing Devpost registration does not establish them.
+
+Required materials include a Devpost page, public repository, documentation/data licences, a video of at most 10 minutes and a deck of at most 10 slides. AI assistance must be disclosed accurately. The title and tagline are saved as a draft. The details form requires a video URL before saving, so the prepared story remains in [DEVPOST.md](DEVPOST.md). No video URL is invented and no final submission has been performed.
+
+The earlier cover and eight-slide deck require refresh for the revised interface. Full video and the 15-image gallery remain deferred until user project approval.

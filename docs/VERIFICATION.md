@@ -1,49 +1,76 @@
 # Verification and limitations
 
-Reviewed 3 November 2026. Results describe this build and the checks performed, not a security certification or scientific accuracy benchmark.
+Reviewed 3 November 2026. Results describe the checked build and deployed services. They are not a security certification or a scientific accuracy benchmark.
 
-## Automated checks
+## Current automated results
 
-- 40 developer-authored regression and API checks pass.
-- TypeScript no-emit checking passes.
-- Project-specific ESLint checking passes.
-- Production Vinext build passes on Vite 8.1.6 and React/RSC 19.2.8.
-- The starter corpus reproduces 75 exact passage spans from 43 selected rows across two papers. Both source SHA-256 digests match. There are 18 source-reported taxa and 60 positive association groups.
-- API tests execute the real API implementation against an in-memory SQLite adapter for D1. Cases cover session isolation, cross-origin writes, cookie properties, revision conflicts, audit persistence, safe exports, source rights confirmation, fixed external request hosts, cached references, failure handling, and rate limits.
-- CSV preserves original fields, reviewer corrections, source author credit, licence metadata, offsets, and taxonomy reference dates. HTML shows original and reviewed fields separately. JSON preserves the complete structured records.
+| Check | Result |
+| --- | --- |
+| `pnpm test` | 50 of 50 developer-authored regression and API checks pass |
+| `pnpm typecheck` | TypeScript no-emit check passes |
+| `pnpm lint` | Full configured ESLint check passes |
+| `pnpm build:vercel` | Standard Next.js 16 / React 19 production build passes |
+| `pnpm build:api` | Standalone Cloudflare Worker API bundle passes |
+| Starter integrity | 75 passage spans and both source SHA-256 digests match their snapshots |
 
-## Browser and hosting checks
+The starter contains 43 selected rows from two papers, 18 source-reported taxa and 60 positive association groups. These are corpus and integrity results, not measured scientific accuracy.
 
-The public app opens without a login. The actual preview D1 binding accepts reviews and imports. A hosted review saved successfully, then remained accepted with its note and revision after a full reload. A dated GBIF reference returned its provider URL and retrieval date on the public deployment.
+Checks cover ambiguity, negation, relation scope, Unicode offsets, DOI deduplication, source rights confirmation, bounded validation, session isolation, cross-origin writes, cookies, stale review conflicts, audit persistence, exports, fixed research-request hosts, references and failure handling. API checks execute the real implementation against an in-memory SQLite adapter for D1. Proxy and Worker checks cover endpoint restrictions, secret authentication, cookie handling and trusted rate-limit buckets.
 
-Live Europe PMC search returned records on the hosted app. A specific DOI query returned the expected Hajira paper. Preparing its licensed reference snapshot populated the form with its title, authors, DOI, CC BY 4.0 terms, and 30,877 narrative characters. Saving this prepared article was not completed before the browser connection reset.
+CSV retains original fields, reviewer corrections, source authors, licence metadata, offsets and taxonomy dates. HTML separates original and reviewed fields. JSON preserves structured source and candidate records.
 
-Responsive checks used actual iframe viewports of 390, 768, and 1280 CSS px. Body scroll width matched client width at each size. Phone navigation opened and reached the review queue. The temporary QA harness was removed before publication.
+## Public deployment and hosted API
 
-Direct browser file-upload and download completion remain unverified. A file-chooser call timed out, and the browser session later reset. Parsing and export behavior pass API and unit checks, but those checks do not prove browser file-dialog behavior. A full cross-browser matrix, screen-reader audit, performance benchmark, and load test have not been completed.
+The initial Vercel deployment for source commit `42fad3b79fcc3d3e9b8b572916e01bc73d2dc49d` reached `READY`. The public entry point is [citeflora.vercel.app](https://citeflora.vercel.app). It uses the standalone API at `https://citeflora-api.adeelfalaksher900.workers.dev` with persistent Cloudflare D1. Subsequent commits need their own build and deployment results.
 
-## Hosted API completion
+This command passed against the actual Vercel domain and its Cloudflare API/D1 path. The extended hosted run completed at 04:21 UTC on 3 November 2026:
 
-`python3 scripts/verify-hosted.py --url https://citeflora.adeelfalaksher900.chatgpt.site` passed against the real hosted Worker and D1 database. It verified the application session cookie flags, the 2-source/75-candidate starter, a new three-candidate original QA import with ambiguity and negation preserved, source hashing, a persisted review correction, a dated GBIF reference, licensed narrative preparation, and HTTP 200 JSON, CSV and HTML exports. The CSV and HTML retained the correction and source attribution. Browser file-dialog completion remains separate and unverified. [Structured result](hosted-verification.json).
+```sh
+python3 scripts/verify-hosted.py --url https://citeflora.vercel.app
+```
+
+The run verified:
+
+- Session creation with the `citeflora_session` cookie's HttpOnly and Secure attributes, plus the two-source/75-candidate starter.
+- A new original QA source producing three candidates, with ambiguous-name and negative-statement flags retained.
+- The imported source's SHA-256 digest and exact passage spans.
+- A saved review correction, revision 1, and a subsequent workspace read containing the decision.
+- A dated GBIF reference result from the 24-record reference set.
+- Licence-checked preparation of the Hajira narrative with CC BY 4.0 terms and more than 30,000 characters.
+- HTTP 200 JSON, CSV and HTML exports. CSV and HTML contained the saved correction and source attribution.
+- A second independent workspace could neither read nor modify the first workspace's claim; both requests returned 404.
+- A stale review revision returned 409, and a cross-origin write returned 403.
+
+The script keeps cookies in memory and uses developer-owned QA text. It writes its current result to `outputs/hosted-verification.json`. It does not test browser file-dialog completion.
+
+## Browser verification status
+
+The initial public Vercel release passed an actual guided browser run: open the study, inspect the passage, save an accepted decision with a note at revision 1, and generate CSV to complete the guide. At 390 CSS px, the landing page, guide and workbench had no horizontal overflow, and mobile navigation worked. A Vercel runtime error/fatal log scan covering the previous 30 minutes found no matching entries.
+
+The next release includes further interface fixes. Final visual QA and the observed browser results for that exact release are pending publication and recheck. Current screenshot assets also await capture. A saved decision after a full browser reload should be checked on the final release; hosted API readback already verifies persistence independently.
+
+Earlier Sites browser checks demonstrated live Europe PMC results and a dated GBIF record. Those observations are separate from the new Vercel checks. Direct browser file-upload and operating-system download completion remain unverified; the current CSV check establishes application export generation and guide completion.
+
+A full cross-browser matrix, screen-reader audit, performance benchmark and load test have not been completed.
 
 ## Dependency review
 
-The production dependency audit reports 0 known advisories. The full development-tool audit reports 4 moderate findings, with 0 high and 0 critical findings. The remaining packages are esbuild in legacy migration tooling, brace-expansion, and minimatch in development tooling. The repository retains its minimum-release-age policy. A minimatch patch was too new for that policy during this review. Audit counts change as advisories and packages change.
+The previously recorded production dependency audit reported 0 known advisories. The full development-tool audit reported 4 moderate findings, 0 high and 0 critical findings. The remaining packages were esbuild in legacy migration tooling, brace-expansion and minimatch in development tooling. The minimum-release-age policy was retained; the available minimatch patch was too new during the review. These are dated audit results, not a fresh advisory guarantee.
 
 ## Continuous integration
 
-GitHub Actions passed the first published source commit, `55f0a8a37eb5895cb7b20da65c035a4979cfed79`. The run is [41525690729](https://github.com/adeelfalaksher900-creator/citeflora/actions/runs/41525690729). The workflow installs the lockfile, runs tests and type checking, and builds the app. Later commits require their own completed run before claiming CI success.
+Earlier published source passed GitHub Actions, including run [41563156232](https://github.com/adeelfalaksher900-creator/citeflora/actions/runs/41563156232). A completed Actions run for the final migration/interface commit must be recorded separately before claiming current CI success. Local results above are separate evidence.
 
-Repository branch-protection settings were not changed. The authenticated browser stopped responding while inspecting the branch settings. CODEOWNERS and contribution instructions request maintainer review, but an enforced branch-protection rule is not claimed.
+Branch-protection settings were not changed. CODEOWNERS and contribution instructions request maintainer review, but an enforced protection rule is not claimed.
 
 ## Scientific boundaries
 
-The extractor uses bounded English rules. It does not estimate clinical efficacy, establish historical species identity, resolve every negation or complex relation, or interpret all source abbreviations. Known names use 24 dated GBIF reference records. Other names request the live service, which can fail. Literature search has a clearly labelled one-paper catalogue fallback if live search fails.
+The extractor uses bounded English rules. It does not establish efficacy, safety or historical identity, resolve all negation and complex relations, or interpret every source abbreviation. Known names use dated GBIF references; others request the live service, which may fail. Literature search has a clearly labelled one-paper fallback.
 
-No domain-expert validation, community endorsement, user study, independently labelled evaluation set, clinical review, or accuracy percentage is claimed. A publication licence does not grant access to restricted community knowledge.
+No domain-expert validation, community endorsement, user study, independently labelled evaluation set, clinical review or scientific accuracy percentage is claimed. Publication licences do not grant access to restricted community knowledge.
 
 ## Submission state
 
-The Devpost title and tagline were saved under Citeflora. The details form was populated with the prepared story and links, but its required video URL prevented the normal details save. The full story remains in [DEVPOST.md](DEVPOST.md). Thumbnail upload did not complete. A 1536 × 1024 PNG cover and an eight-slide pitch deck are prepared. Team count, individual contributions, and first-day Discord registration still need verification by the team.
+The Devpost title and tagline were saved. The details form was populated previously, but its required video URL prevented the normal save. The prepared story is in [DEVPOST.md](DEVPOST.md). No placeholder video URL or final submission has been provided.
 
-No final Devpost submission was performed. Demo video and the full 15-image gallery await the user's project approval.
+An earlier 1536 × 1024 cover and eight-slide deck exist, but need refresh for the revised interface and hosting. Thumbnail upload did not complete. Team count, individual contributions and first-day Discord registration still need team verification. Full demo video and 15-image gallery production await user project approval.

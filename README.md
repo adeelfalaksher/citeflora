@@ -1,44 +1,56 @@
 # Citeflora
 
-An evidence review workspace for traditional medicinal plant research. Every candidate extraction retains its source passage, citation, uncertainty, and review history.
+**Plant knowledge. With a paper trail.**
 
-[Open Citeflora](https://citeflora.adeelfalaksher900.chatgpt.site) · [Product and architecture](docs/PRODUCT.md) · [Data permissions](docs/DATA.md) · [Security](SECURITY.md) · [Verification](docs/VERIFICATION.md) · [Pitch deck](docs/pitch/Citeflora-Pitch.pdf)
+Citeflora helps researchers turn published plant-use reports into records they can check. Find a proposed record, read its original passage, save a review, and export the evidence with its citation and uncertainty intact.
+
+[Open Citeflora](https://citeflora.vercel.app) · [Product and architecture](docs/PRODUCT.md) · [Data permissions](docs/DATA.md) · [Security](SECURITY.md) · [Verification](docs/VERIFICATION.md)
 
 Built during EthnoHack 2026 for Track 1, Traditional Knowledge Mining.
 
-## The problem
+![Citeflora introduction](docs/images/citeflora-home.jpg)
 
-Plant names change across sources. A common name sometimes describes several species. A reported traditional use does not establish clinical effectiveness. Extracting a plant-use pair without its original context makes later review difficult.
+## Try the complete workflow
 
-Citeflora retains a reviewable record from the text snapshot to the extracted candidate. It preserves ambiguous names instead of silently choosing a species. Review decisions and corrected fields remain separate from the original extraction.
+Judges and first-time visitors can choose **Try the guided example** without creating an account or supplying an API key:
 
-![Citeflora research desk](public/media/research-desk.png)
+1. **Open the study.** Inspect the Pelion study's citation, CC BY licence and selected-table scope.
+2. **Check the passage.** Follow the proposed *Hypericum perforatum* and wounds record to its highlighted words in the unchanged source snapshot.
+3. **Save your review.** Accept, reject or keep the extraction pending. Add notes or corrections as needed. The next step becomes available after the server saves the new revision.
+4. **Export the evidence.** Generate CSV, JSON or a printable HTML report containing the saved review and source trail. Completion follows a successful export response.
+
+Researchers can instead choose **Add a research source** to import permitted text, inspect its candidates, and build their own collection. The guided example uses the same real review and export features as the workbench.
+
+![Citeflora guided source review](docs/images/citeflora-guide.jpg)
+
+## Why keep the source attached?
+
+Plant names change across sources. A common name may describe several species. Extracting a plant-use pair without its original wording makes later review difficult, and a reported traditional use does not establish clinical effectiveness.
+
+Citeflora preserves the passage, citation, preparation, regional context and uncertainty. Review corrections remain separate from the original extraction. Acceptance records an extraction review, not clinical validation. The app provides no treatment advice, dosage recommendations or plant-identification guarantee.
 
 ## What works
 
-- Isolated research workspaces stored in Cloudflare D1, identified by a random HttpOnly browser cookie.
-- A starter corpus with 43 selected table rows from two attributed CC BY papers, producing 75 candidate extractions and 18 source-reported taxa.
+- Isolated research workspaces persisted in Cloudflare D1 and identified by an HttpOnly browser session cookie.
+- A starter corpus with 43 selected table rows from two attributed CC BY papers, producing 75 candidates and 18 source-reported taxa.
 - Import of English text, UTF-8 text/Markdown files, and the documented six-column CSV format.
-- A deterministic, versioned rule engine with exact UTF-16 offsets into unchanged source snapshots.
-- Review queue with source and status filters, uncertainty flags, accepted/rejected/pending decisions, notes, and optional corrections.
-- 24 dated GBIF taxonomy reference records, live lookup for other names, and Europe PMC search with licence-checked narrative imports. If live search fails, a clearly labelled one-paper reference catalogue remains available.
-- Association provenance grouped by plant and use, with duplicate DOIs counted once.
-- CSV, JSON, and printable HTML evidence exports, with citations, source hashes, and review state.
-
-Acceptance means the researcher checked an extraction. It is not clinical validation. Citeflora provides no treatment advice, dosage recommendations, or plant-identification guarantee.
+- A versioned deterministic rule engine with exact UTF-16 offsets into unchanged snapshots and SHA-256 digests.
+- A review queue with filters, uncertainty flags, notes, optional corrections and revision checks.
+- 24 dated GBIF taxonomy reference records, live lookup for other names, and Europe PMC search with licence-checked narrative imports. A clearly labelled one-paper catalogue remains available if live search fails.
+- An evidence map of positive reported associations, with duplicate DOIs counted once. Negative, speculative, rejected and unassigned associations are excluded.
+- CSV, JSON and printable HTML exports with attribution, review state, original and reviewed fields, and source spans. JSON and HTML include the latest 200 audit events.
 
 ## Architecture
 
 ```mermaid
 flowchart TD
-  U[Researcher] --> R[React workspace]
-  R --> A[Same-origin Worker API]
-  A --> V[Session and input validation]
-  V --> X[Deterministic extractor]
-  V --> D[(D1 workspace data)]
-  X --> D
-  A --> G[GBIF species API]
-  A --> P[Europe PMC REST API]
+  U[Researcher or judge] --> N[Next.js on Vercel]
+  N --> B[Same-origin API proxy]
+  B --> W[Authenticated Cloudflare Worker]
+  W --> X[Validation and extraction]
+  X --> D[(D1 workspace records)]
+  W --> G[GBIF taxonomy]
+  W --> P[Europe PMC literature]
   D --> E[Attributed evidence exports]
 ```
 
@@ -51,39 +63,85 @@ erDiagram
   WORKSPACES ||--o{ AUDIT : records
 ```
 
-The interface uses React 19 and the Vinext app router. Cloudflare Workers run the API and extraction. D1 stores sources, candidates, sessions, and audit events. The two external data services require no API key. The shipped corpus remains inspectable when an external service is unavailable.
+The public interface uses standard Next.js 16, React 19 and TypeScript on Vercel. Its server API proxy forwards allowlisted requests to `https://citeflora-api.adeelfalaksher900.workers.dev`. The standalone Worker owns sessions, extraction, database writes and external research requests. It requires a secret shared with the Vercel server; the browser never receives a privileged API key.
 
-## Run locally
+The proxy validates exact-origin JSON writes, forwards only `citeflora_session`, and derives a trusted rate-limit bucket from the platform client address. D1 queries are scoped to the session workspace. Reviews check the expected revision and write the decision and audit event together. See [SECURITY.md](SECURITY.md) for boundaries and limitations.
 
-Requirements: Node.js 24 or later, Python 3 only for refreshing the research corpus, and pnpm 11.25.0 as declared in `package.json`.
+## Run and deploy
+
+Use Node.js 24 and the pnpm version declared in `package.json`. Python 3 is needed only for research preparation and hosted verification scripts.
 
 ```sh
 git clone https://github.com/adeelfalaksher900-creator/citeflora.git
 cd citeflora
 corepack enable
 pnpm install --frozen-lockfile
-pnpm build
+```
+
+### Vercel interface and Cloudflare API
+
+An operator needs their own Cloudflare Worker and D1 database. Replace the account and database identifiers in `worker/api.wrangler.jsonc` with your resources, bind the database as `DB`, and apply `drizzle/0000_stormy_frog_thor.sql` before serving requests.
+
+```sh
+pnpm build:api
+pnpm exec wrangler d1 execute DB --remote --config worker/api.wrangler.jsonc --file drizzle/0000_stormy_frog_thor.sql
+pnpm exec wrangler deploy --config worker/api.wrangler.jsonc
+pnpm exec wrangler secret put CITEFLORA_PROXY_SECRET --config worker/api.wrangler.jsonc
+```
+
+Set a random shared secret of 32–256 base64url characters through the secret command's prompt. Configure these server-only variables in Vercel, using the same secret in both services:
+
+| Variable | Purpose |
+| --- | --- |
+| `CITEFLORA_API_URL` | Your HTTPS `workers.dev` API origin, with no path or query |
+| `CITEFLORA_PROXY_SECRET` | Shared server secret matching the Worker secret |
+
+Do not prefix either variable with `NEXT_PUBLIC_` or commit its value. The proxy rejects an incomplete configuration. Europe PMC and GBIF require no service API key for these features. End users and judges need no account or key; operators still configure the deployment secret.
+
+Use `pnpm build:vercel` as the Vercel build command, with Next.js selected as the framework. For local Next.js development, put the operator configuration in an ignored `.env.local` and use your deployed API:
+
+```sh
+pnpm dev:vercel
+pnpm build:vercel
+pnpm start:vercel
+```
+
+The API is built separately with `pnpm build:api`. It retains the `cloudflare:workers` runtime import for Workers deployment.
+
+### Optional Sites development
+
+The original Sites/Vinext path remains supported locally. It uses a local D1 database rather than the Vercel proxy:
+
+```sh
+pnpm build:sites
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_stormy_frog_thor.sql
 pnpm dev
 ```
 
-Open the URL printed by the development server. Local and hosted D1 databases are separate. The repository's public hosting manifest intentionally contains no live Site identity or credentials. For a new Sites deployment, register your own Site and preserve its returned identity. For standalone Cloudflare hosting, bind your own D1 database as `DB` and apply the schema migration before serving the Worker.
+`pnpm build` remains an alias for this optional Sites build. Local and hosted databases are separate. The public hosting manifest contains no live Site identity or credentials. Register your own Site before a new Sites deployment.
 
-No secret environment variable is required for the implemented features. Local `.env*`, runtime state, dependencies, deployment output, and private credentials are excluded from version control.
-
-## Reproduce extraction results
+## Verify the implementation
 
 ```sh
 pnpm test
 pnpm typecheck
+pnpm lint
+pnpm build:vercel
+pnpm build:api
 node scripts/evaluate.mjs
+python3 scripts/verify-hosted.py --url https://citeflora.vercel.app
+```
+
+The 50 developer-authored checks cover extraction scope, ambiguity, negation, Unicode offsets, DOI deduplication, validation, spreadsheet escaping, session isolation, revision conflicts, audit persistence, exports and the proxy/Worker trust boundary. API checks execute the real API against an in-memory SQLite adapter for D1. These do not replace browser or hosted tests and are not an independent scientific accuracy benchmark. See the dated [verification report](docs/VERIFICATION.md).
+
+To refresh the attributed material:
+
+```sh
 python3 scripts/refresh-reference-cache.py
 python3 scripts/refresh-corpus.py
 ```
 
-`refresh-corpus.py` retrieves the two specified articles through the Europe PMC REST service, verifies an explicit permissive licence, expands table row spans, selects the documented taxa, and saves the normalized text and XML/content digests. It does not scrape restricted databases or republish private fieldwork. Source offsets refer to the normalized snapshot, not publisher XML.
-
-The regression tests exercise extraction scope, ambiguity, negation, Unicode offsets, DOI deduplication, validation, spreadsheet formula escaping, session isolation, review revision conflicts, audit persistence, and HTML export escaping. API tests run the real API implementation against an in-memory SQLite adapter for D1's contract. They do not replace browser or hosted D1 checks. Developer-authored fixtures are not an independent scientific accuracy benchmark.
+The corpus script retrieves the specified articles through Europe PMC, verifies a permissive licence, expands table row spans, selects the documented taxa, and saves normalized snapshots and digests. Offsets refer to these snapshots, not publisher XML.
 
 ## CSV import
 
@@ -93,26 +151,26 @@ Use these exact six headings. Quote fields containing commas according to CSV ru
 Botanical name,Local name,Plant parts,Preparation,Route,Reported use
 ```
 
-The interface downloads an empty template. Narratives use sentence scope. Table inputs use row scope. Fields with several plants in a narrative passage remain unassigned candidates requiring human review.
+The interface downloads an empty template. Narratives use sentence scope; tables use row scope. Several plants in a narrative passage produce unassigned candidates requiring human review.
 
 ## Limits
 
-- English rule-based processing with a bounded name list and known-genus fallback. Complex grammar, pronouns, and many names are unsupported.
-- A maximum of 80,000 source characters and 90 proposed records per import. Truncation is marked. Workspaces allow up to 20 sources and 500 candidates.
-- A 30-day browser cookie, without user accounts or cross-device synchronization. Export for portable access.
-- The reference catalogue contains one licensed narrative snapshot, not an index of all literature. Its keyword fallback is broad and explicitly labelled. Automatic imports exclude tables and figures and retain at most 75,000 characters.
-- GBIF matches current taxonomy, not the identity of a historical specimen. Its confidence score is a name-match score only.
-- Literature imports support explicit CC BY 4.0 or CC0 licences. The user reviews source classification and context.
-- Exports include the latest 200 audit events. There is no claim of expert, clinical, or large-scale validation.
+- English rules have a bounded name list and known-genus fallback. Complex grammar, pronouns and many names are unsupported. This is not a trained AI model.
+- Imports allow 80,000 source characters and 90 proposed records. Truncation is marked. Workspaces allow up to 20 sources and 500 candidates.
+- A browser session lasts 30 days. There are no accounts, account recovery or cross-device synchronization. Workspaces are tied to the hosting domain; exports provide portable access.
+- The one-paper catalogue is not a literature index. Narrative preparation excludes tables and figures and retains at most 75,000 characters.
+- Automatic literature imports support explicit CC BY 4.0 or CC0 terms. Users review classification and context. Publication licences do not grant rights to restricted community knowledge.
+- GBIF suggests current taxonomy. Its score is not evidence of efficacy, safety or historical identity.
+- No expert, clinical or independent accuracy validation is claimed. See [verification limitations](docs/VERIFICATION.md) for incomplete checks.
 
 ## Authorship and third-party work
 
-The project uses AI-assisted research, development, and testing. The source and submission disclose that assistance. Human team members retain responsibility for project selection, review, and submission. Specific individual programming or research contributions are not invented.
+The project uses significant ChatGPT/Codex assistance for research, design, development and verification. Human team members retain responsibility for review and submission. Specific individual programming or research contributions are not invented.
 
-The Sites Vinext starter and its maintained build/connector scaffolding predate this project. React, Vinext, Vite, Drizzle, Lucide, Cloudflare tools, and other packages remain under their respective licences. Project-specific work includes the extraction engine, validation and session API, D1 schema, review interface, evidence exports, corpus preparation, tests, and project documentation.
+The maintained Sites/Vinext starter and build/connector scaffolding predate this project. The public deployment uses standard Next.js. React, Next.js, Vinext, Vite, Drizzle, Lucide, Cloudflare tools and other dependencies retain their licences. Project-specific work includes extraction, corpus preparation, validation/session API, D1 schema, proxy boundary, guided review interface, exports, tests and documentation.
 
-New project code is MIT-licensed. Research excerpts retain the papers' CC BY terms and original author attribution. Geist retains the SIL Open Font License. See [data permissions](docs/DATA.md).
+New code is MIT-licensed. Excerpts retain their papers' CC BY terms and author attribution. Geist retains the SIL Open Font License. See [data permissions](docs/DATA.md).
 
 ## Contributing
 
-Open an issue or pull request with a reproducible case. Changes require maintainer review. Keep source snapshots immutable, preserve uncertainty and attribution, and add regression coverage when changing extraction or authorization behavior. Never commit patient information, restricted community knowledge, or credentials.
+Open an issue or pull request with a reproducible case. Changes require maintainer review. Keep snapshots immutable, preserve uncertainty and attribution, and add regression coverage for extraction or authorization changes. Never commit patient information, restricted community knowledge or credentials.

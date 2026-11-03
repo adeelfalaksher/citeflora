@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import type {ReactNode} from 'react';
 import {ArrowRight, ArrowUpRight, Download, FileText, ListChecks} from 'lucide-react';
 import corpus from '../data/corpus.json';
@@ -149,6 +150,6 @@ export default function Welcome({onGuide, onWorkspace, onImport, onMethods, conn
       <section className="welcome-final" aria-labelledby="welcome-final-title"><p className="welcome-eyebrow">Start with one source</p><div className="welcome-final-row"><h2 id="welcome-final-title">Make the next record<br/>one you can trace.</h2><button type="button" className="welcome-secondary" onClick={onWorkspace}>Open your workspace <ArrowRight size={18}/></button></div><p className="welcome-final-note">Research records and reported associations. No treatment recommendations.</p></section>
     </main>
 
-    <footer className="welcome-footer"><div className="welcome-footer-brand"><Mark/><span>Citeflora</span></div><p>Built for EthnoHack 2026 · Traditional Knowledge Mining</p><div className="welcome-footer-links"><button type="button" onClick={onMethods}>Methods and limits <ArrowUpRight size={13}/></button><a href="https://github.com/adeelfalaksher900-creator/citeflora" target="_blank" rel="noopener noreferrer">Source code <ArrowUpRight size={13}/></a></div></footer>
+    <footer className="welcome-footer"><div className="welcome-footer-brand"><Mark/><span>Citeflora</span></div><p>Built for EthnoHack 2026 · Traditional Knowledge Mining</p><div className="welcome-footer-links"><Link href="/privacy">Privacy</Link><Link href="/terms">Research use</Link><button type="button" onClick={onMethods}>Methods and limits <ArrowUpRight size={13}/></button><a href="https://github.com/adeelfalaksher900-creator/citeflora" target="_blank" rel="noopener noreferrer">Source code <ArrowUpRight size={13}/></a></div></footer>
   </div>;
 }
