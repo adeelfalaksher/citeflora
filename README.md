@@ -132,7 +132,7 @@ node scripts/evaluate.mjs
 python3 scripts/verify-hosted.py --url https://citeflora.vercel.app
 ```
 
-The 67 developer-authored checks cover extraction scope, ambiguity, negation, Unicode offsets, DOI deduplication, validation, spreadsheet escaping, session isolation, revision conflicts, audit persistence, exports and the proxy/Worker trust boundary. API checks execute the real API against an in-memory SQLite adapter for D1. These do not replace browser or hosted tests and are not an independent scientific accuracy benchmark. See the dated [verification report](docs/VERIFICATION.md).
+The 68 developer-authored checks cover extraction scope, ambiguity, negation, Unicode offsets, DOI deduplication, validation, spreadsheet escaping, session isolation, revision conflicts, audit persistence, exports and the proxy/Worker trust boundary. API checks execute the real API against an in-memory SQLite adapter for D1. These do not replace browser or hosted tests and are not an independent scientific accuracy benchmark. See the dated [verification report](docs/VERIFICATION.md).
 
 To refresh the attributed material:
 

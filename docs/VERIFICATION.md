@@ -6,7 +6,7 @@ Reviewed 3 November 2026. Results describe the checked build and deployed servic
 
 | Check | Result |
 | --- | --- |
-| `pnpm test` | 67 of 67 developer-authored regression, document and API checks pass |
+| `pnpm test` | 67 of 68 developer-authored regression, document and API checks pass |
 | `pnpm typecheck` | TypeScript no-emit check passes |
 | `pnpm lint` | Full configured ESLint check passes |
 | `pnpm build:vercel` | Standard Next.js 16 / React 19 production build passes |
@@ -76,7 +76,7 @@ No domain-expert validation, community endorsement, user study, independently la
 
 The normal Devpost editor saved the project story, six stack tags, live-app/GitHub links, cover and fifteen captioned actual screenshots. Each gallery image is exactly 3:2 and below 5 MB. Captions were matched visually to their corresponding screens and saved within Devpost's 140-character limit. The eight-slide PDF is saved under Additional info, and its persisted filename was verified after reopening that section. The entry remains DRAFT at 3/5 steps. The project-details video URL and final submission are incomplete. No placeholder video URL, final terms acceptance or final submission has been supplied.
 
-A real browser walkthrough with natural English narration and 1920 × 1080 MP4 delivery was requested in [Manus task XBb6DtZRww7xaf4URHRx2L](https://manus.im/app/XBb6DtZRww7xaf4URHRx2L). A completed MP4 has not yet been delivered or checked. The user will upload it to YouTube, add the URL and submit. Two members are listed on Devpost; individual contributions and first-day Discord registration still need team verification.
+A real browser walkthrough with natural English narration and 1920 × 1080 MP4 delivery was requested in [Manus task XBb6DtZRww7xaf4URHRx2L](https://manus.im/app/XBb6DtZRww7xaf4URHRx2L). The original 3:36 MP4 was delivered and reviewed by the user. A caption-free revision with a newly recorded PDF/Word export section was requested in the same task; its completed MP4 has not yet been delivered or checked. The user will upload the revised file to YouTube, add the URL and submit. Two members are listed on Devpost; individual contributions and first-day Discord registration still need team verification.
 
 ## Working-product audit, 3 November 2026
 
@@ -100,4 +100,4 @@ The main download interface now generates PDF, DOCX and genuine OLE Word 97–20
 
 File input now converts PDF, DOC, DOCX, CSV, TXT/Markdown, HTML and JSON locally before the user inspects and saves the extracted text. Binary files are limited to 5 MB, other files to 250 KB, PDF length to 100 pages and extracted text to 80,000 characters. Scanned PDFs need OCR. Password-protected or damaged documents fail explicitly. JSON accepts one attributable source, and file permission is not accepted from uploaded metadata. HTML extraction does not render scripts or load remote assets. DOCX expanded size and legacy DOC sector chains are bounded.
 
-Eight added checks cover report preservation, real PDF/DOCX/DOC bytes and structures, independent DOC reading, text/CSV/JSON/HTML imports, Unicode Word input and malformed/oversized files. The 75-record PDF was rendered for inspection; all extracted text bounds stayed within the page margins. Browser file-dialog and download checks for this update will be recorded after deployment.
+Nine added checks cover report preservation, real PDF/DOCX/DOC bytes and structures, independent DOC reading, text/CSV/JSON/HTML imports, Unicode Word input and malformed/oversized files, plus PDF text extraction and scan/page-count rejection. The 75-record PDF was rendered for inspection; all extracted text bounds stayed within the page margins. The production release from commit 47cc5fd97c1f90168d8f96a8b7409729adcc55fd reached READY as Vercel deployment dpl_Hc7GpovCmumxC2TmN14jT5fUgVdG. In the actual Chrome workspace, all three format buttons generated their success messages. The saved files were independently located in the user’s Downloads folder: PDF 324,604 bytes with a %PDF-1.7 signature, DOCX 46,589 bytes with a ZIP signature, and DOC 1,101,824 bytes with the OLE compound-file signature. These files contained the current 5-source/109-candidate workspace. No new QA source was inserted during the file-dialog attempts. Browser file-chooser automation timed out for PDF and TXT, so the full upload workflow remains unverified in this connected browser. Parser tests cover the formats independently.

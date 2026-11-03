@@ -67,6 +67,16 @@ test('Legacy DOC imports retain Unicode body text and reject invalid compound-fi
   const bad=bytes.slice();new DataView(bad.buffer).setUint32(72,0xFFFFFFFF,true);assert.equal(docToText(bad),null);
   await assert.rejects(reader.readSourceDocument(new File(['wrong format'],'source.doc')),/not a readable DOC/);
 });
+test('PDF imports extract the document text and reject scans and excessive page counts',async()=>{
+  // PDF.js supplies its supported Node geometry shim through the legacy entry;
+  // the same text-extraction path uses a real worker in the browser.
+  await import('pdfjs-dist/legacy/build/pdf.mjs');
+  globalThis.pdfjsWorker=await import('pdfjs-dist/build/pdf.worker.mjs');
+  const pdf=await PDFDocument.create();pdf.addPage().drawText(sample,{x:40,y:700,size:10,maxWidth:500});
+  const source=await reader.readSourceDocument(new File([await pdf.save()],'source.pdf'));assert.ok(source.text.includes('Mentha spicata'));assert.ok(source.text.includes('not used for burns'));
+  const scan=await PDFDocument.create();scan.addPage();await assert.rejects(reader.readSourceDocument(new File([await scan.save()],'scan.pdf')),/OCR/);
+  const long=await PDFDocument.create();for(let i=0;i<101;i++)long.addPage();await assert.rejects(reader.readSourceDocument(new File([await long.save()],'long.pdf')),/100 pages/);
+});
 test('Unreadable, unsupported, oversized, malformed and ambiguous multi-source files fail explicitly',async()=>{
   await assert.rejects(reader.readSourceDocument(new File(['x'],'source.exe')),/Choose PDF/);
   await assert.rejects(reader.readSourceDocument(new File(['x'.repeat(250001)],'source.txt')),/250 KB/);
