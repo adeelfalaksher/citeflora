@@ -69,12 +69,12 @@ test('Source import preserves text and rejects duplicates and executable links',
   assert.equal((await api(req('sources',{method:'POST',cookie:a.cookie,body:{...body,url:'javascript:alert(1)'}}))).status,400);
 });
 test('Evidence exports are scoped, attributed, and protected against HTML injection',async()=>{
-  const a=await start();const body={title:'<script>unsafe title</script>',text:'Aloe vera leaves were used for burns.',rightsConfirmed:true,evidenceType:'traditional-report',licence:'Original content'};
-  await api(req('sources',{method:'POST',cookie:a.cookie,body}));
+  const a=await start();const body={title:'<script>unsafe title</script>',authors:'Developer Example',text:'Aloe vera leaves were used for burns.',rightsConfirmed:true,evidenceType:'traditional-report',licence:'Original content'};
+  const added=await (await api(req('sources',{method:'POST',cookie:a.cookie,body}))).json();const claim=added.workspace.claims.find(c=>c.sourceId===added.sourceId);await api(req('claims/'+claim.id,{method:'PATCH',cookie:a.cookie,body:{status:'accepted',revision:0,reviewerNote:'QA checked the passage and recorded a field correction.',plantPart:'leaf blade',preparation:'Not stated in the passage'}}));
   const json=await api(req('export?format=json',{cookie:a.cookie}));assert.equal(json.status,200);assert.ok(json.headers.get('content-disposition').includes('attachment'));
   const data=await json.json();assert.equal(data.sources.length,3);assert.equal(data.claims.length,76);
-  const csv=await (await api(req('export?format=csv',{cookie:a.cookie}))).text();assert.ok(csv.includes('source_hash'));
-  const html=await (await api(req('export?format=html',{cookie:a.cookie}))).text();assert.ok(html.includes('&lt;script&gt;unsafe title'));assert.ok(!html.includes('<script>unsafe title'));
+  const csv=await (await api(req('export?format=csv',{cookie:a.cookie}))).text();assert.ok(csv.includes('source_hash'));assert.ok(csv.includes('reviewed_plant_part'));assert.ok(csv.includes('leaf blade'));assert.ok(csv.includes('Developer Example'));
+  const html=await (await api(req('export?format=html',{cookie:a.cookie}))).text();assert.ok(html.includes('&lt;script&gt;unsafe title'));assert.ok(!html.includes('<script>unsafe title'));assert.ok(html.includes('Reviewed plant part: leaf blade'));assert.ok(html.includes('Not stated in the passage'));
 });
 test('Malformed and oversized bodies fail without a database write',async()=>{
   assert.equal((await api(req('session',{method:'POST',body:'{broken'}))).status,400);
@@ -88,6 +88,10 @@ test('External request targets are fixed and service failures stay explicit',asy
   const fallback=await api(req('literature?q=plants',{cookie:a.cookie}));assert.equal(fallback.status,200);const limited=await fallback.json();assert.equal(limited.mode,'reference-snapshot');assert.equal(limited.results.length,1);assert.match(limited.scopeWarning,/dated catalogue/);
   assert.equal((await api(req('literature/import',{method:'POST',cookie:a.cookie,body:{pmcid:'https://untrusted.test/'}}))).status,400);
   globalThis.fetch=originalFetch;
+});
+test('Literature titles display source text without escaped markup',async()=>{
+  const a=await start();globalThis.fetch=async()=>new Response(JSON.stringify({hitCount:1,resultList:{result:[{id:'1',title:'Uses of &lt;i&gt;Mentha&lt;/i&gt; &amp; Aloe',authorString:'A &amp; B',source:'MED'}]}}),{headers:{'Content-Type':'application/json'}});
+  const data=await (await api(req('literature?q=Mentha',{cookie:a.cookie}))).json();assert.equal(data.mode,'live');assert.equal(data.results[0].title,'Uses of Mentha & Aloe');assert.equal(data.results[0].authors,'A & B');globalThis.fetch=originalFetch;
 });
 test('Dated taxonomy and licensed narrative snapshots work without outbound network',async()=>{
   const a=await start();globalThis.fetch=async()=>{throw new Error('Network unavailable');};

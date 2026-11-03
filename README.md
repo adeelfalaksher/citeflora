@@ -2,7 +2,7 @@
 
 An evidence review workspace for traditional medicinal plant research. Every candidate extraction retains its source passage, citation, uncertainty, and review history.
 
-[Open Citeflora](https://citeflora.adeelfalaksher900.chatgpt.site) · [Product and architecture](docs/PRODUCT.md) · [Data permissions](docs/DATA.md) · [Security](SECURITY.md)
+[Open Citeflora](https://citeflora.adeelfalaksher900.chatgpt.site) · [Product and architecture](docs/PRODUCT.md) · [Data permissions](docs/DATA.md) · [Security](SECURITY.md) · [Verification](docs/VERIFICATION.md) · [Pitch deck](docs/pitch/Citeflora-Pitch.pdf)
 
 Built during EthnoHack 2026 for Track 1, Traditional Knowledge Mining.
 
@@ -11,6 +11,8 @@ Built during EthnoHack 2026 for Track 1, Traditional Knowledge Mining.
 Plant names change across sources. A common name sometimes describes several species. A reported traditional use does not establish clinical effectiveness. Extracting a plant-use pair without its original context makes later review difficult.
 
 Citeflora retains a reviewable record from the text snapshot to the extracted candidate. It preserves ambiguous names instead of silently choosing a species. Review decisions and corrected fields remain separate from the original extraction.
+
+![Citeflora research desk](public/media/research-desk.png)
 
 ## What works
 

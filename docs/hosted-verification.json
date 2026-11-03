@@ -1,0 +1,27 @@
+{
+  "sessionStatus": 201,
+  "sessionCookieFlagsVerified": true,
+  "starterSources": 2,
+  "starterCandidates": 75,
+  "qaImportCandidates": 3,
+  "sourceDigestVerified": true,
+  "ambiguityAndNegationVerified": true,
+  "reviewPersisted": true,
+  "taxonomyMode": "reference-snapshot",
+  "licensedNarrativePrepared": true,
+  "exports": {
+    "json": {
+      "status": 200,
+      "characters": 94221
+    },
+    "csv": {
+      "status": 200,
+      "characters": 111750
+    },
+    "html": {
+      "status": 200,
+      "characters": 68566
+    }
+  },
+  "scope": "Real hosted API and D1 checks. Browser file-dialog completion is a separate, unverified check."
+}

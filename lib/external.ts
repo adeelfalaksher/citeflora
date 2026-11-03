@@ -31,7 +31,7 @@ export async function literatureSearch(query:string) {
   try {
     const json=await externalJSON('https://www.ebi.ac.uk/europepmc/webservices/rest/search?format=json&resultType=core&pageSize=8&query='+encodeURIComponent('('+query+') AND OPEN_ACCESS:Y'));
     return {hitCount:json.hitCount,retrievedAt:new Date().toISOString(),mode:'live',results:(json.resultList?.result||[]).map((p:{id:string;pmcid?:string;title:string;authorString:string;pubYear:string;doi?:string;license?:string;isOpenAccess?:string;abstractText?:string;source:string})=>({
-      id:p.id,pmcid:p.pmcid,title:p.title,authors:p.authorString,year:p.pubYear,doi:p.doi||'',licence:p.license||'',
+      id:p.id,pmcid:p.pmcid,title:xmlText(p.title).replace(/<[^>]*>/g,''),authors:xmlText(p.authorString),year:p.pubYear,doi:p.doi||'',licence:p.license||'',
       isOpenAccess:p.isOpenAccess,abstract:(p.abstractText||'').replace(/<[^>]*>/g,' ').slice(0,1200),
       url:p.doi?'https://doi.org/'+p.doi:'https://europepmc.org/article/'+p.source+'/'+p.id,
     }))};
