@@ -38,7 +38,7 @@ The run verified:
 - A dated GBIF reference result from the 24-record reference set.
 - Licence-checked preparation of the Hajira narrative with CC BY 4.0 terms and more than 30,000 characters.
 - HTTP 200 JSON, CSV and HTML exports. CSV and HTML contained the saved correction and source attribution.
-- A second independent workspace could neither read nor modify the first workspace's claim; both requests returned 404.
+- A second independent workspace’s record list excluded the first workspace’s claim, and attempting to modify that claim returned 404.
 - A stale review revision returned 409, and a cross-origin write returned 403.
 
 The script keeps cookies in memory and uses developer-owned QA text. It writes its current result to `outputs/hosted-verification.json`. It does not test browser file-dialog completion.
@@ -47,7 +47,7 @@ The script keeps cookies in memory and uses developer-owned QA text. It writes i
 
 The initial public Vercel release passed an actual guided browser run: open the study, inspect the passage, save an accepted decision with a note at revision 1, and generate CSV to complete the guide. At 390 CSS px, the landing page, guide and workbench had no horizontal overflow, and mobile navigation worked. A Vercel runtime error/fatal log scan covering the previous 30 minutes found no matching entries.
 
-The next release includes further interface fixes. Final visual QA and the observed browser results for that exact release are pending publication and recheck. Current screenshot assets also await capture. A saved decision after a full browser reload should be checked on the final release; hosted API readback already verifies persistence independently.
+The revised production interface was checked at 390, 1280 and 1440 CSS px. The guided record remained accepted after a full reload. A later review saved at revision 3 cleared the prior export completion, and Cmd/Ctrl+K opened and focused source search from the welcome page. Browser import of original QA text created two candidates, retaining the ambiguous Mint record. Screenshots in docs/images show the actual public interface. The final asset and build-script release still requires its deployment check.
 
 Earlier Sites browser checks demonstrated live Europe PMC results and a dated GBIF record. Those observations are separate from the new Vercel checks. Direct browser file-upload and operating-system download completion remain unverified; the current CSV check establishes application export generation and guide completion.
 
@@ -55,7 +55,7 @@ A full cross-browser matrix, screen-reader audit, performance benchmark and load
 
 ## Dependency review
 
-The previously recorded production dependency audit reported 0 known advisories. The full development-tool audit reported 4 moderate findings, 0 high and 0 critical findings. The remaining packages were esbuild in legacy migration tooling, brace-expansion and minimatch in development tooling. The minimum-release-age policy was retained; the available minimatch patch was too new during the review. These are dated audit results, not a fresh advisory guarantee.
+A fresh production dependency audit reported 0 known advisories on 3 November 2026. The full development-tool audit reported 4 moderate findings, 0 high and 0 critical findings. The remaining packages were esbuild in legacy migration tooling, brace-expansion and minimatch in development tooling. The minimum-release-age policy was retained; the available minimatch patch was too new during the review. These are dated audit results, not a fresh advisory guarantee.
 
 ## Continuous integration
 
@@ -73,4 +73,4 @@ No domain-expert validation, community endorsement, user study, independently la
 
 The Devpost title and tagline were saved. The details form was populated previously, but its required video URL prevented the normal save. The prepared story is in [DEVPOST.md](DEVPOST.md). No placeholder video URL or final submission has been provided.
 
-An earlier 1536 × 1024 cover and eight-slide deck exist, but need refresh for the revised interface and hosting. Thumbnail upload did not complete. Team count, individual contributions and first-day Discord registration still need team verification. Full demo video and 15-image gallery production await user project approval.
+The 1536 × 1024 cover and eight-slide editable deck/PDF have been refreshed for the revised interface and Vercel hosting. Thumbnail upload did not complete. Team count, individual contributions and first-day Discord registration still need team verification. Full demo video and 15-image gallery production await user project approval.

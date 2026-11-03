@@ -1,4 +1,9 @@
 {
+  "verifiedAt": "2026-11-03T04:21:02.468724+00:00",
+  "url": "https://citeflora.vercel.app",
+  "crossWorkspaceReadAndWriteIsolationVerified": true,
+  "staleRevisionRejected": true,
+  "crossOriginWriteRejected": true,
   "sessionStatus": 201,
   "sessionCookieFlagsVerified": true,
   "starterSources": 2,

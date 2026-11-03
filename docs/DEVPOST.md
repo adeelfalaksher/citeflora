@@ -59,4 +59,4 @@ Source: [github.com/adeelfalaksher900-creator/citeflora](https://github.com/adee
 
 ## Preparation status
 
-This is the prepared story. The existing title and tagline are saved, but the details form's mandatory video URL has prevented its normal save. No placeholder URL is provided and no final submission has been performed. The earlier cover and deck need refresh for the revised interface. Full video and 15-image gallery production remain deferred until project approval. Team membership, contributions and first-day Discord registration still require team verification.
+This is the prepared story. The existing title and tagline are saved, but the details form's mandatory video URL has prevented its normal save. No placeholder URL is provided and no final submission has been performed. The 3:2 cover and eight-slide editable deck/PDF have been refreshed for the revised interface and Vercel deployment. Full video and 15-image gallery production remain deferred until project approval. Team membership, contributions and first-day Discord registration still require team verification.

@@ -94,4 +94,4 @@ The recorded deadline is 8 November 2026, 09:00 UTC, 14:00 Pakistan time. Teams 
 
 Required materials include a Devpost page, public repository, documentation/data licences, a video of at most 10 minutes and a deck of at most 10 slides. AI assistance must be disclosed accurately. The title and tagline are saved as a draft. The details form requires a video URL before saving, so the prepared story remains in [DEVPOST.md](DEVPOST.md). No video URL is invented and no final submission has been performed.
 
-The earlier cover and eight-slide deck require refresh for the revised interface. Full video and the 15-image gallery remain deferred until user project approval.
+The 3:2 cover and eight-slide editable deck/PDF now show the revised interface and Vercel deployment. Full video and the 15-image gallery remain deferred until user project approval.
