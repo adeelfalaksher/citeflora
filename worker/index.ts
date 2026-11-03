@@ -1,4 +1,5 @@
 import handler from "vinext/server/fetch-handler";
+import { api } from "../lib/server";
 import { runWithConnectorBinding } from "../lib/connector-context";
 import type { ConnectorBinding } from "../lib/connector-contract.mjs";
 
@@ -23,7 +24,7 @@ const worker = {
         },
       };
     }
-    const response = await runWithConnectorBinding(binding, () => handler.fetch(request, env, ctx));
+    const response = await runWithConnectorBinding(binding, () => new URL(request.url).pathname.startsWith('/api/') ? api(request) : handler.fetch(request, env, ctx));
     const headers = new Headers(response.headers);
     headers.set('X-Content-Type-Options', 'nosniff');
     headers.set('Referrer-Policy', 'no-referrer');

@@ -1,0 +1,16 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "citeflora-api",
+  "account_id": "d098ce62f3e97fafbf057ffb6f5e7a6e",
+  "main": "../dist/api/worker.js",
+  "compatibility_date": "2026-05-15",
+  "workers_dev": true,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "citeflora",
+      "database_id": "6bb545b1-f257-45c2-99eb-a4d059453615",
+      "migrations_dir": "../drizzle"
+    }
+  ]
+}
