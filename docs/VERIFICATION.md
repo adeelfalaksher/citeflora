@@ -21,7 +21,7 @@ CSV retains original fields, reviewer corrections, source authors, licence metad
 
 ## Public deployment and hosted API
 
-The initial Vercel deployment for source commit `42fad3b79fcc3d3e9b8b572916e01bc73d2dc49d` reached `READY`. The public entry point is [citeflora.vercel.app](https://citeflora.vercel.app). It uses the standalone API at `https://citeflora-api.adeelfalaksher900.workers.dev` with persistent Cloudflare D1. Subsequent commits need their own build and deployment results.
+The final Vercel deployment for source commit `69e0c66c97af6df72dff61172b78fbb9bae0c469` reached `READY` as deployment `dpl_6krj4BQHf82As1NK5QNkrLT2yNDm`. The public entry point is [citeflora.vercel.app](https://citeflora.vercel.app). It uses the standalone API at `https://citeflora-api.adeelfalaksher900.workers.dev` with persistent Cloudflare D1. This release includes the revised interface, refreshed cover, pitch files and canonical Next route generation before type checking.
 
 This command passed against the actual Vercel domain and its Cloudflare API/D1 path. The extended hosted run completed at 04:21 UTC on 3 November 2026:
 
@@ -47,7 +47,7 @@ The script keeps cookies in memory and uses developer-owned QA text. It writes i
 
 The initial public Vercel release passed an actual guided browser run: open the study, inspect the passage, save an accepted decision with a note at revision 1, and generate CSV to complete the guide. At 390 CSS px, the landing page, guide and workbench had no horizontal overflow, and mobile navigation worked. A Vercel runtime error/fatal log scan covering the previous 30 minutes found no matching entries.
 
-The revised production interface was checked at 390, 1280 and 1440 CSS px. The guided record remained accepted after a full reload. A later review saved at revision 3 cleared the prior export completion, and Cmd/Ctrl+K opened and focused source search from the welcome page. Browser import of original QA text created two candidates, retaining the ambiguous Mint record. Screenshots in docs/images show the actual public interface. The final asset and build-script release still requires its deployment check.
+The revised production interface was checked at 390, 1280 and 1440 CSS px. The guided record remained accepted after a full reload. A later review saved at revision 3 cleared the prior export completion, and Cmd/Ctrl+K opened and focused source search from the welcome page. Browser import of original QA text created two candidates, retaining the ambiguous Mint record. Screenshots in docs/images show the actual public interface. The final release also passed a fresh browser session through study, passage, saved review at revision 1 and JSON export completion. A reload retained its accepted decision. A later automated CLI rerun was interrupted before completion and is not counted as a passing run; the earlier hosted report remains dated separately.
 
 Earlier Sites browser checks demonstrated live Europe PMC results and a dated GBIF record. Those observations are separate from the new Vercel checks. Direct browser file-upload and operating-system download completion remain unverified; the current CSV check establishes application export generation and guide completion.
 
@@ -59,7 +59,7 @@ A fresh production dependency audit reported 0 known advisories on 3 November 20
 
 ## Continuous integration
 
-Earlier published source passed GitHub Actions, including run [41563156232](https://github.com/adeelfalaksher900-creator/citeflora/actions/runs/41563156232). A completed Actions run for the final migration/interface commit must be recorded separately before claiming current CI success. Local results above are separate evidence.
+The published final source commit `69e0c66c97af6df72dff61172b78fbb9bae0c469` passed GitHub Actions run [41596319514](https://github.com/adeelfalaksher900-creator/citeflora/actions/runs/41596319514). CI runs the 50 tests, type generation and TypeScript, ESLint, the Vercel build, standalone API bundle and legacy Sites build. Both build orders were also checked locally with canonical route generation before TypeScript.
 
 Branch-protection settings were not changed. CODEOWNERS and contribution instructions request maintainer review, but an enforced protection rule is not claimed.
 
